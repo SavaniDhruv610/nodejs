@@ -1,15 +1,13 @@
+const path = require('path');
 
 const express = require('express');
-const routes  = express.Router();
 
+const rootDir = require('../util/path');
 
+const router = express.Router();
 
-routes.get("/", (req, res, next) => {
-    //   console.log("another middle ware");
-    res.send("<h1>hello from express</h1>");
-    //this middlewear always run first becaus it match users first
-    //therefor we call this middleware after the user middleware
-  });
+router.get('/', (req, res, next) => {
+  res.sendFile(path.join(rootDir, 'views', 'shop.html'));
+});
 
-
-  module.exports  = routes;
+module.exports = router;
