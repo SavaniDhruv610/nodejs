@@ -7,8 +7,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-const adminData = require("./routes/admin");
-
+const adminRoutes = require("./routes/admin");
 const shoproutes = require("./routes/shop");
 
 const bodyparser = require("body-parser");
@@ -19,7 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(bodyparser.urlencoded({ extended: false }));
 
-app.use("/admin", adminData.routes);
+app.use("/admin", adminRoutes);
 
 app.use(shoproutes);
 
