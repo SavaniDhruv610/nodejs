@@ -3,9 +3,10 @@ const http = require("http");
 const express = require("express");
 const app = express();
 
-// app.set("view engine", "pug");
 app.set("view engine", "ejs");
 app.set("views", "views");
+
+const errorController = require('./controllers/error')
 
 const adminRoutes = require("./routes/admin");
 const shoproutes = require("./routes/shop");
@@ -18,13 +19,15 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(bodyparser.urlencoded({ extended: false }));
 
-app.use("/admin", adminRoutes);
-
-app.use(shoproutes);
-
+//for path 
 app.use((req, res, next) => {
-  // res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
-  res.status(404).render('404',{pageTitle:"page not found"})
+  res.locals.path = req.path;
+  next();
 });
+
+app.use("/admin", adminRoutes);
+app.use(shoproutes);
+app.use(errorController.get404);
+
 
 app.listen(3000);
