@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("fs");//import file system
 const path = require("path");
 const p = path.join(
   path.dirname(process.mainModule.filename),
@@ -17,11 +17,11 @@ const getProductsFromFile = (cb) => {
 };
 
 module.exports = class Product {
-  constructor(t) {
+  constructor(t) {//t is title
     this.title = t;
   }
 
-  save() {
+  save() {//method available in class
     getProductsFromFile((products) => {
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), (err) => {
@@ -30,7 +30,7 @@ module.exports = class Product {
     });
   }
 
-  static fetchAll(cb) {
+  static fetchAll(cb) {//fatch all product
     //call Back
     getProductsFromFile(cb);
   }
