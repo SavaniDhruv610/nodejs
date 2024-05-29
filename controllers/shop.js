@@ -22,14 +22,14 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   res.render("shop/cart", {
-    path: "cart",
+    path: "/cart",
     pageTitle: "Your cart",
   });
 };
 
 exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
-    path: "orders",
+    path: "/orders",
     pageTitle: "Your Orders",
   });
 };
