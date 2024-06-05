@@ -9,17 +9,17 @@ const router = express.Router();
 router.get("/", shopController.getIndex);
 
 router.get("/products", shopController.getProducts);
-// : symbol is not look for a rought ex  /products/1324
+// // : symbol is not look for a rought ex  /products/1324
 router.get("/products/:productId", shopController.getProduct);
 
-router.get("/cart", shopController.getCart);
+// router.get("/cart", shopController.getCart);
 
-router.post("/cart", shopController.postCart);
+// router.post("/cart", shopController.postCart);
 
-router.post('/cart-delete-item',shopController.postCartDeleteProduct);
+// router.post('/cart-delete-item',shopController.postCartDeleteProduct);
 
-router.get("/orders", shopController.getOrders);
+// router.get("/create-orders", shopController.getOrders);
 
-router.get("/checkout", shopController.getCheckout);
+// router.get("/orders", shopController.getCheckout);
 
 module.exports = router;
