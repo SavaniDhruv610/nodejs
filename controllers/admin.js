@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 
+// Render add product page
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
@@ -8,11 +9,13 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 
+// Handle add product form submission
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+  // Create a new product with user ID
   const product = new Product(
     title,
     price,
@@ -24,7 +27,6 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then((result) => {
-      // console.log(result);
       console.log("Created Product");
       res.redirect("/admin/products");
     })
@@ -33,6 +35,7 @@ exports.postAddProduct = (req, res, next) => {
     });
 };
 
+// Render edit product page
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
@@ -40,7 +43,6 @@ exports.getEditProduct = (req, res, next) => {
   }
   const prodId = req.params.productId;
   Product.findById(prodId)
-    // Product.findById(prodId)
     .then((product) => {
       if (!product) {
         return res.redirect("/");
@@ -55,6 +57,7 @@ exports.getEditProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
+// Handle edit product form submission
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
@@ -62,6 +65,7 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
 
+  // Update the product with the given ID
   const product = new Product(
     updatedTitle,
     updatedPrice,
@@ -78,6 +82,7 @@ exports.postEditProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
+// Fetch and render all products
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
     .then((products) => {
@@ -90,6 +95,7 @@ exports.getProducts = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
+// Handle delete product request
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.deleteById(prodId)

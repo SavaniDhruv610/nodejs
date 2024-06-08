@@ -12,14 +12,15 @@ router.get("/products", shopController.getProducts);
 // // : symbol is not look for a rought ex  /products/1324
 router.get("/products/:productId", shopController.getProduct);
 
-// router.get("/cart", shopController.getCart);
+router.get("/cart", shopController.getCart);
 
 router.post("/cart", shopController.postCart);
 
-// router.post('/cart-delete-item',shopController.postCartDeleteProduct);
+router.post('/cart-delete-item',shopController.postCartDeleteProduct);
 
-// router.get("/create-orders", shopController.getOrders);
+// router.post("/create-orders", shopController.postOrder);
+router.post("/create-order", shopController.postOrder);
 
-// router.get("/orders", shopController.getCheckout);
+router.get("/orders", shopController.getOrders);
 
 module.exports = router;
