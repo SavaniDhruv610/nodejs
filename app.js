@@ -20,10 +20,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findById("6662ca3227b47d04500f213a")
+  User.findById("666fd5430172fc14bebe9a5e")
     .then((user) => {
-      // req.user = user;
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       next();
     })
     .catch((err) => console.log(err));
@@ -34,18 +33,26 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
-
-
-// mongoose
-//   .connect(
-//     "mongodb+srv://dhruvsavani610:NfJ43W0fj17bFuFz@cluster0.yalwpwp.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0"
-//   )
-//   .then((result) => {
-//     app.listen(3000);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
+mongoose
+  .connect(
+    // "mongodb+srv://dhruvsavani610:NfJ43W0fj17bFuFz@cluster0.yalwpwp.mongodb.net/Cluster0?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://dhruvsavani610:OnpKEyb6R4liBAfY@shop.js2sfd0.mongodb.net/shop?retryWrites=true&w=majority&appName=shop"
+  )
+  .then((result) => {
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: "Dhruv",
+          email: "admin@gmail.com",
+          cart: {
+            items: [],
+          },
+        });
+        user.save();
+      }
+    });
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
