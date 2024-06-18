@@ -7,24 +7,29 @@
         <main>
             <% if (products.length > 0) { %>
                 <ul class="cart__item-list">
+                    <% let totalPrice = 0; %>
                     <% products.forEach(p => { %>
+                        <% const productTotalPrice = p.productId.price * p.quantity; %>
+                        <% totalPrice += productTotalPrice; %>
                         <li class="cart__item">
-                            <h1><%= p.productId.title %></h1>
+                            <h1>Title:<%= p.productId.title %></h1>
                             <h2>Quantity: <%= p.quantity %></h2>
+                            <h2>Price: $<%= p.productId.price %></h2>
+                            <h2>Total: $<%= productTotalPrice %></h2>
                             <form action="/cart-delete-item" method="POST">
                                 <input type="hidden" value="<%= p.productId._id %>" name="productId">
-                                <button class="btn danger" type="submit">Delete</button>
+                                <button class="btn danger" type="submit">Remove from cart</button>
                             </form>
                         </li>
                     <% }) %>
                 </ul>
                 <hr>
                 <div class="centered">
+                    <h2>Total Price: $<%= totalPrice %></h2>
                     <form action="/create-order" method="POST">
                         <button type="submit" class="btn">Order Now!</button>
                     </form>
                 </div>
-                
             <% } else { %>
                 <h1>No Products in Cart!</h1>
             <% } %>
