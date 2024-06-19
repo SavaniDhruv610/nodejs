@@ -40,12 +40,4 @@ const requestHendeler = (req, res) => {
   res.end();
 };
 
-// module.exports = requestHendeler;
-
-// module.exports = {
-//     heandler : requestHendeler,
-//     text : "hard coded file in massage"
-// };
-
 module.exports.heandler = requestHendeler;
-// module.exports.text = "hello";
