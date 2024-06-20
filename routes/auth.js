@@ -2,7 +2,7 @@ const express = require("express");
 
 const bcrypt = require("bcryptjs");
 
-const { check, body } = require("express-validator"); // Updated import
+const { check, body } = require("express-validator"); 
 
 const authController = require("../controllers/auth");
 
@@ -17,9 +17,14 @@ router.get("/signup", authController.getSignup);
 router.post(
   "/login",
   [
-    check("email").isEmail().withMessage("Enter the valid Email"),
+    check("email")
+      .isEmail()
+      .withMessage("Enter the valid Email")
+      .normalizeEmail(),
     body("password", "Enter the valid password length")
-      .isLength({ min: 5 }).isAlphanumeric()
+      .isLength({ min: 5 })
+      .isAlphanumeric()
+      .trim(),
   ],
   authController.postLogin
 );
@@ -30,6 +35,7 @@ router.post(
     check("email")
       .isEmail()
       .withMessage("Please enter a valid email.")
+      .normalizeEmail()
       .custom((value, { req }) => {
         return User.findOne({ email: value }).then((userDoc) => {
           if (userDoc) {
@@ -38,16 +44,20 @@ router.post(
             );
           }
         });
-      }),
+      })
+      .normalizeEmail(),
     body("password", "The password contain atleast 5 characters")
       .isLength({ min: 5 })
-      .isAlphanumeric(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("The passwords not match");
-      }
-      return true;
-    }),
+      .isAlphanumeric()
+      .trim(),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("The passwords not match");
+        }
+        return true;
+      }),
   ],
   authController.postSignup
 );
