@@ -16,13 +16,13 @@
                             <% let totalOrderPrice = 0; %>
                             <% order.products.forEach(p => { %>
                                 <li class="orders__products-item">
-                                    <img src="<%= p.product.imageUrl %> " alt="Product Image">
-                                </li>
-                                <li class="orders__products-item">
-                                    Name: <%= p.product.title %> | 
-                                    Quantity: <%= p.quantity %> | 
-                                    Price: ₹<%= p.product.price %> | 
-                                    Total price per product: ₹<%= p.product.price * p.quantity %>
+                                    <img src="<%= p.product.imageUrl %>" alt="Product Image">
+                                    <div>
+                                        <span>Name: <%= p.product.title %></span>
+                                        <span>Quantity: <%= p.quantity %></span>
+                                        <span>Price: ₹<%= p.product.price %></span>
+                                        <span>Total price per product: ₹<%= p.product.price * p.quantity %></span>
+                                    </div>
                                 </li>
                                 <% totalOrderPrice += p.product.price * p.quantity; %>
                             <% }); %>

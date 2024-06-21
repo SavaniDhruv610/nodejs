@@ -1,25 +1,115 @@
-.cart__item-list {
-  list-style: none;
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
   margin: 0;
   padding: 0;
-  margin: auto;
+}
+
+main {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 2rem;
+  color: #343a40;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.cart__item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
   width: 100%;
-  max-width: 100%;
 }
 
 .cart__item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.cart__item img {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 1rem;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.cart__item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart__item-content h1, .cart__item-content h2 {
+  margin: 0.25rem 0;
+}
+
+.cart__item-content h1 {
+  font-size: 1.5rem;
+  color: #343a40;
+}
+
+.cart__item-content h2 {
+  font-size: 1.2rem;
+  color: #495057;
+}
+
+.cart__item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cart__item-actions .btn {
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.cart__item-actions .btn:hover {
+  background-color: #c82333;
+}
+
+.centered {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.centered h2 {
+  font-size: 1.8rem;
+  color: #007bff;
   margin-bottom: 1rem;
 }
 
-.cart__item h1,
-.cart__item h2 {
-  margin-right: 1rem;
+.centered .btn {
+  background-color: #28a745;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 5px;
   font-size: 1.2rem;
-  margin: 0;
+  transition: background-color 0.3s;
 }
 
+.centered .btn:hover {
+  background-color: #218838;
+}

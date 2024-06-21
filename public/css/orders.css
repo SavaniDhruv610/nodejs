@@ -52,7 +52,6 @@ h1 {
 .orders__products-item {
   display: flex;
   align-items: center;
-  justify-content: center;
   margin: 0.5rem 0;
   padding: 0.75rem;
   background-color: #ffffff;
@@ -63,11 +62,20 @@ h1 {
 }
 
 .orders__products-item img {
-  max-width: 60px;
-  max-height: 60px;
+  max-width: 100px;
+  max-height: 100px;
   margin-right: 1rem;
   border-radius: 4px;
   object-fit: cover;
+}
+
+.orders__products-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.orders__products-item div span {
+  margin: 0.25rem 0;
 }
 
 .orders__products-item strong {
@@ -81,10 +89,6 @@ h1 {
 
 .orders__products-item:nth-child(even) {
   background-color: #f8f9fa;
-}
-
-.orders__products-item > *:not(:first-child) {
-  margin-left: 1rem;
 }
 
 .orders__products-item:last-child {
