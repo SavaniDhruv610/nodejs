@@ -3,8 +3,8 @@
   margin: 0;
   padding: 0;
   margin: auto;
-  width: 40rem;
-  max-width: 90%;
+  width: 100%;
+  max-width: 100%;
 }
 
 .cart__item {

@@ -21,13 +21,13 @@
                                 <li class="orders__products-item">
                                     Name: <%= p.product.title %> | 
                                     Quantity: <%= p.quantity %> | 
-                                    Price: <%= p.product.price %> | 
-                                    Total price per product: <%= p.product.price * p.quantity %>
+                                    Price: ₹<%= p.product.price %> | 
+                                    Total price per product: ₹<%= p.product.price * p.quantity %>
                                 </li>
                                 <% totalOrderPrice += p.product.price * p.quantity; %>
                             <% }); %>
                                 <li class="orders__products-item">
-                                    <strong>Total order price: <%= totalOrderPrice %></strong>
+                                    <strong>Total order price: ₹<%= totalOrderPrice %></strong>
                                 </li>
                         </ul>
                     </li>
