@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Product = require("../models/product");
 const Order = require("../models/order");
-const { application } = require("express");
+const PDFDocument = require("pdfkit");
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -140,7 +140,6 @@ exports.getOrders = (req, res, next) => {
       return next(error);
     });
 };
-
 exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
 
@@ -155,21 +154,53 @@ exports.getInvoice = (req, res, next) => {
       const invoiceName = "invoice-" + orderId + ".pdf";
       const invoicePath = path.join("data", "invoices", invoiceName);
 
-      fs.readFile(invoicePath, (err, data) => {
-        if (err) {
-          console.error(err);
-          return next(err);
-        }
+      const pdfDoc = new PDFDocument();
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'inline; filename="' + invoiceName + '"'
+      );
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
 
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader(
-          "Content-Disposition",
-          'inline; filename="' + invoiceName + '"'
-        );
-        res.send(data);
+      // Title
+      pdfDoc.fontSize(26).text("Invoice", {
+        underline: true,
+        align: 'center'
       });
+
+      pdfDoc.moveDown();
+
+      // Divider
+      pdfDoc.fontSize(20).text("---------------------", {
+        align: 'center'
+      });
+
+      pdfDoc.moveDown();
+
+      // Product List
+      let totalPrice = 0;
+      pdfDoc.fontSize(16);
+      order.products.forEach((prod) => {
+        totalPrice += prod.quantity * prod.product.price;
+        pdfDoc.text(
+          `Name: ${prod.product.title} | Quantity: ${prod.quantity} | Price: $${prod.product.price}`,
+          {
+            align: 'left',
+            indent: 40
+          }
+        );
+        pdfDoc.moveDown(0.5);
+      });
+
+      pdfDoc.moveDown(1.5);
+      pdfDoc.fontSize(20).text(`Total Price: $${totalPrice}`, {
+        align: 'right'
+      });
+
+      pdfDoc.end();
     })
     .catch((err) => {
-      next(err)
+      next(err);
     });
 };
