@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const fileHelper = require("../util/file");
 const { validationResult } = require("express-validator");
 const Product = require("../models/product");
-const product = require("../models/product");
+const User = require("../models/user");
+const Order = require('../models/order')
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -190,5 +191,22 @@ exports.postDeleteProduct = (req, res, next) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
+    });
+};
+
+exports.getAccount = (req, res, next) => {
+  let userData;
+  User.findById(req.user._id)
+    .then((user) => {
+      userData = user;
+      return Order.find({ "user.userId": req.user._id });
+    })
+    .then((orders) => {
+      res.render("admin/account", {
+        email: userData.email,
+        orders: orders,
+        pageTitle: "Admin Account",
+        path: "/admin/account",
+      });
     });
 };

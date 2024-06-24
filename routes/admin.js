@@ -51,4 +51,6 @@ router.post(
 
 router.post('/delete-product', isAuth, adminController.postDeleteProduct);
 
+router.get('/account', isAuth, adminController.getAccount);
+
 module.exports = router;
