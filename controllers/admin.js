@@ -64,6 +64,7 @@ exports.postAddProduct = (req, res, next) => {
     description: description,
     imageUrl: imageUrl,
     userId: req.user,
+    isDeleted:false,
   });
   product
     .save()
@@ -173,6 +174,27 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
+// exports.postDeleteProduct = (req, res, next) => {
+//   const prodId = req.body.productId;
+//   Product.findById(prodId)
+//     .then((product) => {
+//       if (!product) {
+//         return next(new Error("Product not found"));
+//       }
+//       fileHelper.deleteFile(product.imageUrl);
+//       return Product.updateOne({ _id: prodId, userId: req.user._id });
+//     })
+//     .then(() => {
+//       console.log("Deleted Product");
+//       res.redirect("/admin/products");
+//     })
+//     .catch((err) => {
+//       const error = new Error(err);
+//       error.httpStatusCode = 500;
+//       return next(error);
+//     });
+// };
+
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
@@ -181,10 +203,13 @@ exports.postDeleteProduct = (req, res, next) => {
         return next(new Error("Product not found"));
       }
       fileHelper.deleteFile(product.imageUrl);
-      return Product.deleteOne({ _id: prodId, userId: req.user._id });
+      return Product.updateOne(
+        { _id: prodId, userId: req.user._id },
+        { $set: { isDeleted: true } }
+      );
     })
     .then(() => {
-      console.log("Deleted Product");
+      console.log("Marked Product as Deleted");
       res.redirect("/admin/products");
     })
     .catch((err) => {
@@ -193,6 +218,7 @@ exports.postDeleteProduct = (req, res, next) => {
       return next(error);
     });
 };
+
 
 exports.getAccount = (req, res, next) => {
   let userData;

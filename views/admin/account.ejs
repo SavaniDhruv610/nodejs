@@ -6,25 +6,32 @@
     <%- include('../includes/navigation.ejs') %>
     <main>
         <h1>Account Information</h1>
-        <p>Email: <%= email %></p>
-        <h2>Order History</h2>
+        <h3>Email: <%= email %></h3>
         <% if (orders.length <= 0) { %>
             <h1>Nothing there!</h1>
         <% } else { %>
             <ul class="orders">
-                <% orders.forEach((order, index) => { %>
+                <h2>Your Order</h2>
+                <% orders.forEach(order => { %>
                     <li class="orders__item">
                         <h1>Order - # <%= order._id %></h1>
                         <ul class="orders__products">
+                            <% let totalOrderPrice = 0; %>
                             <% order.products.forEach(p => { %>
                                 <li class="orders__products-item">
                                     <img src="/<%= p.product.imageUrl %>" alt="Product Image">
                                     <div>
                                         <span>Name: <%= p.product.title %></span>
                                         <span>Quantity: <%= p.quantity %></span>
+                                        <span>Price: ₹<%= p.product.price %></span>
+                                        <span>Total price per product: ₹<%= p.product.price * p.quantity %></span>
                                     </div>
                                 </li>
+                                <% totalOrderPrice += p.product.price * p.quantity; %>
                             <% }); %>
+                                <li class="orders__products-item">
+                                    <strong>Total order price: ₹<%= totalOrderPrice %> - <a href="/orders/<%=order._id%>">Click To download the Invoice</a></strong>
+                                </li>
                         </ul>
                     </li>
                 <% }); %>
