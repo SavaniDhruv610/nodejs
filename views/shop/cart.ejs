@@ -32,10 +32,7 @@
             <hr>
             <div class="centered">
                 <h2>Total Price: ₹<%= totalPrice %></h2>
-                <form action="/create-order" method="POST">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button type="submit" class="btn">Order Now!</button>
-                </form>
+                <a class="btn" href="/checkout">Checkout</a>
             </div>
         <% } else { %>
             <h1>No Products in Cart!</h1>
@@ -44,3 +41,4 @@
     <%- include('../includes/end.ejs') %>
 </body>
 </html>
+

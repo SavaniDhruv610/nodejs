@@ -3,7 +3,8 @@ const fileHelper = require("../util/file");
 const { validationResult } = require("express-validator");
 const Product = require("../models/product");
 const User = require("../models/user");
-const Order = require('../models/order')
+const Order = require("../models/order");
+const ITEMS_PER_PAGE = 3;
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -64,7 +65,7 @@ exports.postAddProduct = (req, res, next) => {
     description: description,
     imageUrl: imageUrl,
     userId: req.user,
-    isDeleted:false,
+    isDeleted: false,
   });
   product
     .save()
@@ -158,13 +159,28 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find({ userId: req.user._id })
+  const page = +req.query.page || 1;
+  let totalItems;
+  Product.find({ userId: req.user._id, isDeleted: false })
+    .countDocuments()
+    .then((numProducts) => {
+      totalItems = numProducts;
+      return Product.find({ isDeleted: false }) // Filter out deleted products
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       // console.log(products);
       res.render("admin/products", {
         prods: products,
         pageTitle: "Admin Products",
         path: "/admin/products",
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
       });
     })
     .catch((err) => {
@@ -219,8 +235,6 @@ exports.getProducts = (req, res, next) => {
 //     });
 // };
 
-
-
 exports.deleteProduct = (req, res, next) => {
   const prodId = req.params.productId;
   Product.findById(prodId)
@@ -228,7 +242,7 @@ exports.deleteProduct = (req, res, next) => {
       if (!product) {
         return next(new Error("Product not found"));
       }
-      fileHelper.deleteFile(product.imageUrl);
+      // fileHelper.deleteFile(product.imageUrl); This is used to delete images from the local storage, so when a product is deleted, the image is not displayed.
       return Product.updateOne(
         { _id: prodId, userId: req.user._id },
         { $set: { isDeleted: true } }
@@ -236,13 +250,12 @@ exports.deleteProduct = (req, res, next) => {
     })
     .then(() => {
       console.log("Marked Product as Deleted");
-      res.status(200).json({message:"Success"});
+      res.status(200).json({ message: "Success" });
     })
     .catch((err) => {
-     res.status(500).json({message:"Deleting product is failed!"});
+      res.status(500).json({ message: "Deleting product is failed!" });
     });
 };
-
 
 exports.getAccount = (req, res, next) => {
   let userData;

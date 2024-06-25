@@ -32,12 +32,13 @@
                                             <input type="hidden" value="<%= product._id %>" name="productId">
                                             <input type="hidden" name="_csrf" value="<%= csrfToken%>">
                                             <button class="btn" type="button" onclick="deleteProduct(this)">Delete</button>
-
                                     </div>
                                 </article>
                             <% } %>
                         <% } %>
                     </div>
+            <%- include('../includes/pagination.ejs' ,{currentPage:currentPage , lastPage:lastPage , nextPage:nextPage , hasPreviousPage:hasPreviousPage , hasNextPage:hasNextPage}) %>
+
                     <% } else { %>
                         <h1>No Products Found!</h1>
                         <% } %>

@@ -1,4 +1,4 @@
-const deleteProduct2 = (btn) => {
+const deleteProduct = (btn) => {
     const productId = btn.parentNode.querySelector("[name=productId]").value;
     const csrf = btn.parentNode.querySelector("[name=_csrf]").value;
     const productElement = btn.closest("article"); // Corrected typo here

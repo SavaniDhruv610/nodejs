@@ -1,37 +1,38 @@
 const fs = require("fs");
 const path = require("path");
+const stripe = require("stripe")(
+  "sk_test_51PVVgIHSPjrJ3mNHtKcMw1WcMWPrQbLkvPWXgsslDfLdLb1qI2ROSY88zGH1yE0XlBNVbGiWqNTSC0PJcK45IBxb00PGTlcXtM"
+);
+const PDFDocument = require("pdfkit");
 const Product = require("../models/product");
 const Order = require("../models/order");
-const PDFDocument = require("pdfkit");
 const ITEMS_PER_PAGE = 3;
-
 
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
   let totalItems;
-
-  Product.find()
+  Product.find({ isDeleted: false }) // Filter out deleted products
     .countDocuments()
-    .then(numProducts => {
+    .then((numProducts) => {
       totalItems = numProducts;
-      return Product.find()
+      return Product.find({ isDeleted: false }) // Filter out deleted products
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })
-    .then(products => {
-      res.render('shop/product-list', {
+    .then((products) => {
+      res.render("shop/product-list", {
         prods: products,
-        pageTitle: 'Products',
-        path: '/products',
+        pageTitle: "Products",
+        path: "/products",
         currentPage: page,
         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
         hasPreviousPage: page > 1,
         nextPage: page + 1,
         previousPage: page - 1,
-        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
@@ -58,11 +59,11 @@ exports.getProduct = (req, res, next) => {
 exports.getIndex = (req, res, next) => {
   const page = +req.query.page || 1;
   let totalItems;
-  Product.find()
+  Product.find({ isDeleted: false }) // Filter out deleted products
     .countDocuments()
     .then((numProducts) => {
       totalItems = numProducts;
-      return Product.find()
+      return Product.find({ isDeleted: false }) // Filter out deleted products
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })
@@ -80,7 +81,9 @@ exports.getIndex = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -109,8 +112,13 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then((result) => {
-      // console.log(result);
+      console.log(result);
       res.redirect("/cart");
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -128,7 +136,112 @@ exports.postCartDeleteProduct = (req, res, next) => {
     });
 };
 
+exports.getCheckout = (req, res, next) => {
+  let products;
+  let total = 0;
+  req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      console.log(user.cart.items);
+      products = user.cart.items;
+      products.forEach((p) => {
+        total += +p.quantity * +p.productId.price;
+      });
+      return stripe.checkout.sessions.create({
+        line_items: products.map((p) => {
+          return {
+            price_data: {
+              currency: "inr",
+              unit_amount: parseInt(Math.ceil(p.productId.price * 100)),
+              product_data: {
+                name: p.productId.title,
+                description: p.productId.description,
+              },
+            },
+            quantity: p.quantity,
+          };
+        }),
+        mode: "payment",
+        success_url:
+          req.protocol + "://" + req.get("host") + "/checkout/success", // => http://localhost:3000,
+        cancel_url: req.protocol + "://" + req.get("host") + "/checkout/cancel",
+      });
+    })
+    .then((session) => {
+      res.render("shop/checkout", {
+        pageTitle: "Checkout",
+        path: "/checkout",
+        products: products,
+        totalSum: total.toFixed(2),
+        sessionId: session.id,
+      });
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
+exports.getCheckoutSuccess = async (req, res, next) => {
+  await req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items.map((i) => {
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          email: req.user.email,
+          userId: req.user,
+        },
+        products: products,
+      });
+      return order.save();
+    })
+    .then((result) => {
+      return req.user.clearCart();
+    })
+    .then(() => {
+      res.redirect("/orders");
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
 exports.postOrder = async (req, res, next) => {
+  await req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items.map((i) => {
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          email: req.user.email,
+          userId: req.user,
+        },
+        products: products,
+      });
+      return order.save();
+    })
+    .then((result) => {
+      return req.user.clearCart();
+    })
+    .then(() => {
+      res.redirect("/orders");
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
+exports.getCheckoutSuccess = async (req, res, next) => {
   await req.user
     .populate("cart.items.productId")
     .then((user) => {

@@ -187,10 +187,13 @@ form {
 
 .card__image {
   width: 100%;
+  height: 10rem;
+  text-align: center;
 }
 
 .card__image img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .card__actions {
@@ -247,57 +250,51 @@ form {
   background: rgb(255, 176, 176);
   color: red;
 }
+
 .pagination {
   margin-top: 2rem;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 0;
+  font-family: 'Arial', sans-serif;
 }
 
 .pagination a {
   text-decoration: none;
-  color: green;
+  color: #00695c;
   padding: 0.5rem 1rem;
-  border: 1px solid black;
+  border: 1px solid #00695c;
   margin: 0 0.5rem;
-  border-radius: 4px;
+  border-radius: 5px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .pagination a:hover,
 .pagination a:active,
 .pagination a.active {
-  background: green;
+  background: #00695c;
   color: white;
-}
-
-.pagination a.current {
-  background: green;
-  color: white;
-  border-color: green;
 }
 
 .pagination a.disabled {
-  color: gray;
-  border-color: gray;
+  color: #cccccc;
+  border-color: #cccccc;
   pointer-events: none;
+  cursor: not-allowed;
 }
 
-.pagination a:first-child {
+.pagination a.disabled:hover {
+  background: transparent;
+}
+
+.pagination a:first-of-type {
   margin-left: 0;
 }
 
-.pagination a:last-child {
+.pagination a:last-of-type {
   margin-right: 0;
 }
-
-.pagination a:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 128, 0, 0.5);
-}
-
 
 @media (min-width: 768px) {
   .main-header__nav {
