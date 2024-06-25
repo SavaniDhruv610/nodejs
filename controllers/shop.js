@@ -3,18 +3,35 @@ const path = require("path");
 const Product = require("../models/product");
 const Order = require("../models/order");
 const PDFDocument = require("pdfkit");
+const ITEMS_PER_PAGE = 3;
+
 
 exports.getProducts = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let totalItems;
+
   Product.find()
-    .then((products) => {
-      // console.log(products);
-      res.render("shop/product-list", {
+    .countDocuments()
+    .then(numProducts => {
+      totalItems = numProducts;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
+    .then(products => {
+      res.render('shop/product-list', {
         prods: products,
-        pageTitle: "All Products",
-        path: "/products",
+        pageTitle: 'Products',
+        path: '/products',
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
       });
     })
-    .catch((err) => {
+    .catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
@@ -39,12 +56,27 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let totalItems;
   Product.find()
+    .countDocuments()
+    .then((numProducts) => {
+      totalItems = numProducts;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
       });
     })
     .catch((err) => {
@@ -166,14 +198,14 @@ exports.getInvoice = (req, res, next) => {
       // Title
       pdfDoc.fontSize(26).text("Invoice", {
         underline: true,
-        align: 'center'
+        align: "center",
       });
 
       pdfDoc.moveDown();
 
       // Divider
       pdfDoc.fontSize(20).text("---------------------", {
-        align: 'center'
+        align: "center",
       });
 
       pdfDoc.moveDown();
@@ -186,8 +218,8 @@ exports.getInvoice = (req, res, next) => {
         pdfDoc.text(
           `Name: ${prod.product.title} | Quantity: ${prod.quantity} | Price: $${prod.product.price}`,
           {
-            align: 'left',
-            indent: 40
+            align: "left",
+            indent: 40,
           }
         );
         pdfDoc.moveDown(0.5);
@@ -195,7 +227,7 @@ exports.getInvoice = (req, res, next) => {
 
       pdfDoc.moveDown(1.5);
       pdfDoc.fontSize(20).text(`Total Price: $${totalPrice}`, {
-        align: 'right'
+        align: "right",
       });
 
       pdfDoc.end();
