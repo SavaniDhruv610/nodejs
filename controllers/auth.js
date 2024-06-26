@@ -68,7 +68,6 @@ exports.postLogin = (req, res, next) => {
       validationErrors: errors.array(),
     });
   }
-
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
@@ -152,9 +151,10 @@ exports.postSignup = (req, res, next) => {
       transporter.sendMail({
         to: req.body.email,
         from: "savanidhruv24@gmail.com",
-        subject: "Password reset",
+        subject: "Signup Successful",
         html: `
           <h1>SignUp successfully</h1>
+          <h1>Your username is ${email}</h1>
         `,
       });
     })

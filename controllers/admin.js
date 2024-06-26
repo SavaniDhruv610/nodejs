@@ -161,11 +161,11 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
   let totalItems;
-  Product.find({ userId: req.user._id, isDeleted: false })
+  Product.find({ userId: req.user._id, isDeleted: false  })
     .countDocuments()
     .then((numProducts) => {
       totalItems = numProducts;
-      return Product.find({ isDeleted: false }) // Filter out deleted products
+      return Product.find({ userId: req.user._id, isDeleted: false  }) // Filter out deleted products and users
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })

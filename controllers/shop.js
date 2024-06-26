@@ -212,63 +212,34 @@ exports.getCheckoutSuccess = async (req, res, next) => {
     });
 };
 
-exports.postOrder = async (req, res, next) => {
-  await req.user
-    .populate("cart.items.productId")
-    .then((user) => {
-      const products = user.cart.items.map((i) => {
-        return { quantity: i.quantity, product: { ...i.productId._doc } };
-      });
-      const order = new Order({
-        user: {
-          email: req.user.email,
-          userId: req.user,
-        },
-        products: products,
-      });
-      return order.save();
-    })
-    .then((result) => {
-      return req.user.clearCart();
-    })
-    .then(() => {
-      res.redirect("/orders");
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
-};
-
-exports.getCheckoutSuccess = async (req, res, next) => {
-  await req.user
-    .populate("cart.items.productId")
-    .then((user) => {
-      const products = user.cart.items.map((i) => {
-        return { quantity: i.quantity, product: { ...i.productId._doc } };
-      });
-      const order = new Order({
-        user: {
-          email: req.user.email,
-          userId: req.user,
-        },
-        products: products,
-      });
-      return order.save();
-    })
-    .then((result) => {
-      return req.user.clearCart();
-    })
-    .then(() => {
-      res.redirect("/orders");
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
-};
+// exports.postOrder = async (req, res, next) => {
+//   await req.user
+//     .populate("cart.items.productId")
+//     .then((user) => {
+//       const products = user.cart.items.map((i) => {
+//         return { quantity: i.quantity, product: { ...i.productId._doc } };
+//       });
+//       const order = new Order({
+//         user: {
+//           email: req.user.email,
+//           userId: req.user,
+//         },
+//         products: products,
+//       });
+//       return order.save();
+//     })
+//     .then((result) => {
+//       return req.user.clearCart();
+//     })
+//     .then(() => {
+//       res.redirect("/orders");
+//     })
+//     .catch((err) => {
+//       const error = new Error(err);
+//       error.httpStatusCode = 500;
+//       return next(error);
+//     });
+// };
 
 exports.getOrders = (req, res, next) => {
   Order.find({ "user.userId": req.user._id })
@@ -285,6 +256,7 @@ exports.getOrders = (req, res, next) => {
       return next(error);
     });
 };
+
 exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
 
