@@ -1,28 +1,97 @@
-.form-control {
-  margin: 1rem 0;
+/* Main container for product form */
+.product-main {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f5f5f5;
 }
 
-.form-control label,
-.form-control input,
-.form-control textarea {
-  display: block;
+/* Product form styling */
+.product-form {
   width: 100%;
-  margin-bottom: 0.25rem;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
+/* Form section styling */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual form control styling */
+.form-control {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label styling */
+.form-control label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Input, textarea, and select styling */
 .form-control input,
-.form-control textarea {
-  border: 1px solid #a1a1a1;
-  font: inherit;
-  border-radius: 2px;
+.form-control textarea,
+.form-control select {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
 }
 
+/* Focus state for input, textarea, and select */
 .form-control input:focus,
-.form-control textarea:focus {
-  outline-color: #00695c;
+.form-control textarea:focus,
+.form-control select:focus {
+  border-color: #00796b;
+  outline: none;
 }
 
+/* Invalid state for input, textarea, and select */
 .form-control input.invalid,
-.form-control textarea.invalid {
+.form-control textarea.invalid,
+.form-control select.invalid {
   border-color: red;
+}
+
+/* User message styling */
+.user-message {
+  padding: 1rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+/* Error message styling */
+.user-message--error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Button styling */
+.btn {
+  align-self: flex-end;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #00796b;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover state */
+.btn:hover {
+  background-color: #004d40;
 }
