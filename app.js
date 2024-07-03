@@ -50,6 +50,7 @@ app.set("views", "views");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
+const searchRought= require("./routes/search");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -94,6 +95,7 @@ app.use((req, res, next) => {
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+app.use(searchRought)
 
 app.use("/500", errorController.get500);
 

@@ -21,6 +21,9 @@ exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const image = req.file;
   const price = req.body.price;
+  const colour = req.body.colour;
+  const category = req.body.category;
+  const quantity = req.body.quantity;
   const description = req.body.description;
   if (!image) {
     return res.status(422).render("admin/edit-product", {
@@ -50,6 +53,9 @@ exports.postAddProduct = (req, res, next) => {
         title: title,
         imageUrl: image.path, // Fixed typo
         price: price,
+        category: category,
+    colour: colour,
+    quantity: quantity,
         description: description,
       },
       errorMessage: errors.array()[0].msg,
@@ -64,6 +70,9 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
+    category: category,
+    colour: colour,
+    quantity: quantity,
     userId: req.user,
     isDeleted: false,
   });
@@ -112,6 +121,9 @@ exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
+  const updatedColour = req.body.colour;
+  const updatedQuantity = req.body.quantity;
+  const updatedCategory = req.body.category;
   const image = req.file;
   const updatedDesc = req.body.description;
 
@@ -142,6 +154,9 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
+      product.colour = updatedColour;
+      product.quantity = updatedQuantity;
+      product.category = updatedCategory;
       if (image) {
         fileHelper.deleteFile(product.imageUrl);
         product.imageUrl = image.path;

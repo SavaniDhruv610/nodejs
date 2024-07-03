@@ -14,6 +14,7 @@ router.get("/products", shopController.getProducts);
 // : symbol is not look for a rought ex  /products/1324
 router.get("/products/:productId", shopController.getProduct);
 
+
 router.get("/cart", isAuth, shopController.getCart);
 
 router.post("/cart", isAuth, shopController.postCart);

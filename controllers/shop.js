@@ -6,7 +6,7 @@ const stripe = require("stripe")(
 const PDFDocument = require("pdfkit");
 const Product = require("../models/product");
 const Order = require("../models/order");
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 10;
 
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
@@ -268,54 +268,101 @@ exports.getInvoice = (req, res, next) => {
       if (order.user.userId.toString() !== req.user._id.toString()) {
         return next(new Error("Unauthorized"));
       }
+
       const invoiceName = "invoice-" + orderId + ".pdf";
       const invoicePath = path.join("data", "invoices", invoiceName);
 
       const pdfDoc = new PDFDocument();
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader(
-        "Content-Disposition",
-        'inline; filename="' + invoiceName + '"'
-      );
-      pdfDoc.pipe(fs.createWriteStream(invoicePath));
-      pdfDoc.pipe(res);
+      pdfDoc.pipe(fs.createWriteStream(invoicePath)); // Save to file
+      pdfDoc.pipe(res); // Stream to response
 
-      // Title
-      pdfDoc.fontSize(26).text("Invoice", {
-        underline: true,
-        align: "center",
-      });
+      // Header and Invoice details on the same line
+      pdfDoc
+        .font("Helvetica-Bold")
+        .fontSize(20)
+        .text("Crayon Solutions", 50, 50);
+      pdfDoc.font("Helvetica").fontSize(12).text("+91 9879090909", 50, 70);
+
+      pdfDoc
+        .font("Helvetica-Bold")
+        .fontSize(20)
+        .text("INVOICE", 400, 50, { align: "right" });
+      pdfDoc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Invoice No. ${orderId}`, 200, 70, { align: "right" });
+      pdfDoc.text(`16 June 2025`, 400, 90, { align: "right" });
+
+      pdfDoc.moveDown(2);
+      // Billing details
+      pdfDoc.text("BILLED TO:", 50, pdfDoc.y);
+      pdfDoc.text(`${order.user.email}`, 50, pdfDoc.y + 15);
+
+      pdfDoc.moveDown(2);
+
+      // Table header
+      pdfDoc.font("Helvetica-Bold").fontSize(12);
+      const tableTop = pdfDoc.y;
+      pdfDoc.text("Item", 50, tableTop, { width: 150 });
+      pdfDoc.text("Quantity", 200, tableTop, { width: 100 });
+      pdfDoc.text("Unit Price", 300, tableTop, { width: 100 });
+      pdfDoc.text("Total", 400, tableTop, { width: 100 });
 
       pdfDoc.moveDown();
-
-      // Divider
-      pdfDoc.fontSize(20).text("---------------------", {
-        align: "center",
-      });
-
+      pdfDoc.moveTo(50, pdfDoc.y).lineTo(500, pdfDoc.y).stroke(); // Draw line under header
       pdfDoc.moveDown();
 
-      // Product List
+      // Table rows
+      pdfDoc.font("Helvetica").fontSize(12);
       let totalPrice = 0;
-      pdfDoc.fontSize(16);
-      order.products.forEach((prod) => {
-        totalPrice += prod.quantity * prod.product.price;
-        pdfDoc.text(
-          `Name: ${prod.product.title} | Quantity: ${prod.quantity} | Price: $${prod.product.price}`,
-          {
-            align: "left",
-            indent: 40,
-          }
-        );
-        pdfDoc.moveDown(0.5);
+      let yPosition = pdfDoc.y;
+      order.products.forEach((prod, i) => {
+        const itemTotal = prod.quantity * prod.product.price;
+        totalPrice += itemTotal;
+
+        yPosition = pdfDoc.y + 20;
+        pdfDoc.text(`${prod.product.title}`, 50, yPosition, { width: 150 });
+        pdfDoc.text(`${prod.quantity}`, 200, yPosition, { width: 100 });
+        pdfDoc.text(`$${prod.product.price.toFixed(2)}`, 300, yPosition, {
+          width: 100,
+        });
+        pdfDoc.text(`$${itemTotal.toFixed(2)}`, 400, yPosition, { width: 100 });
+        pdfDoc.moveDown(1.5);
       });
 
+      pdfDoc
+        .moveTo(50, yPosition + 35)
+        .lineTo(500, yPosition + 35)
+        .stroke(); // Draw line above totals
       pdfDoc.moveDown(1.5);
-      pdfDoc.fontSize(20).text(`Total Price: $${totalPrice}`, {
-        align: "right",
+
+      // Total price
+      const yyPosition = pdfDoc.y; // Store the current y position
+
+      pdfDoc
+        .font("Helvetica-Bold")
+        .fontSize(12)
+        .text("Subtotal", 300, yyPosition, { width: 100 });
+      pdfDoc.text(`$${totalPrice.toFixed(2)}`, 400, yyPosition, { width: 100 });
+
+      pdfDoc.moveDown();
+      pdfDoc.fontSize(12).text("Tax (0%)", 300, pdfDoc.y - 13, { width: 100 });
+      pdfDoc.text(`$0.00`, 400, yyPosition + 15, { width: 100 }); // Adjust y position for proper alignment
+
+      pdfDoc.moveDown();
+      pdfDoc.fontSize(12).text("Total", 300, pdfDoc.y - 13, { width: 100 });
+      pdfDoc.text(`$${totalPrice.toFixed(2)}`, 400, yyPosition + 30, {
+        width: 100,
+      }); // Adjust y position for proper alignment
+
+      pdfDoc.moveDown(2);
+
+      // Thank you note
+      pdfDoc.fontSize(12).text("Thank you!", {
+        align: "center",
       });
 
-      pdfDoc.end();
+      pdfDoc.end(); // Finish PDF
     })
     .catch((err) => {
       next(err);

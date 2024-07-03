@@ -309,3 +309,38 @@ form {
     width: 30rem;
   }
 }
+
+/* search */
+
+.main-header__search,
+.mobile-nav__search {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem;
+}
+
+.main-header__search input,
+.mobile-nav__search input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    flex-grow: 1;
+}
+
+.main-header__search button,
+.mobile-nav__search button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.main-header__search button:hover,
+.mobile-nav__search button:hover {
+    background-color: #0056b3;
+}
+
+
