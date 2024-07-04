@@ -25,7 +25,7 @@ const userSchema = new Schema({
       },
     ],
   },
-});
+}, { timestamps: true });
 
 userSchema.methods.addToCart = function (product) {
   const cartProductIndex = this.cart.items.findIndex((cp) => {

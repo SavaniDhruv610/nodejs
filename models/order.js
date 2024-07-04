@@ -18,6 +18,6 @@ const orderSchema = new Schema({
       ref: "user",
     },
   },
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("order", orderSchema);
