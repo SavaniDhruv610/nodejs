@@ -53,7 +53,8 @@ h1 {
   flex-direction: column;
 }
 
-.cart__item-content h1, .cart__item-content h2 {
+.cart__item-content h1,
+.cart__item-content h2 {
   margin: 0.25rem 0;
 }
 

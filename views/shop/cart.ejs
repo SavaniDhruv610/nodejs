@@ -16,8 +16,8 @@
                         <div class="cart__item-content">
                             <h1>Title: <%= p.productId.title %></h1>
                             <h2>Quantity: <%= p.quantity %></h2>
-                            <h2>Price: ₹<%= p.productId.price %></h2>
-                            <h2>Total: ₹<%= productTotalPrice %></h2>
+                            <h2>Price: ₹<%= p.productId.price.toFixed(2) %></h2>
+                            <h2>Total: ₹<%= productTotalPrice.toFixed(2) %></h2>
                         </div>
                         <div class="cart__item-actions">
                             <form action="/cart-delete-item" method="POST">
@@ -31,8 +31,7 @@
             </ul>
             <hr>
             <div class="centered">
-                <h2>Total Price: ₹<%= totalPrice %></h2>
-                <!-- <a class="btn" href="/user-details">Checkout</a> -->
+                <h2>Total Price: ₹<%= totalPrice.toFixed(2) %></h2>
                 <a class="btn" href="/checkout">Checkout</a>
             </div>
         <% } else { %>
@@ -42,4 +41,3 @@
     <%- include('../includes/end.ejs') %>
 </body>
 </html>
-

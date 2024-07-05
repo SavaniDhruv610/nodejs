@@ -34,7 +34,7 @@
 
 /* Label styling */
 .form-control label {
-  margin-bottom: 0.5rem;
+  margin-bottom: 4px;
   font-weight: bold;
   font-size: 1rem;
 }
@@ -94,4 +94,23 @@
 /* Button hover state */
 .btn:hover {
   background-color: #004d40;
+}
+
+/* Additional styles for better UX */
+.form-control input,
+.form-control textarea,
+.form-control select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-control input:focus,
+.form-control textarea:focus,
+.form-control select:focus {
+  border-color: #004d40;
+}
+
+.product-form .btn {
+  width: 100%;
+  margin-top: 1rem;
 }

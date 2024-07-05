@@ -155,6 +155,7 @@ exports.postSignup = (req, res, next) => {
         html: `
           <h1>SignUp successfully</h1>
           <h1>Your username is ${email}</h1>
+          <h1>Your password is ${password}</h1>
         `,
       });
     })
@@ -168,6 +169,7 @@ exports.postSignup = (req, res, next) => {
 exports.postLogout = (req, res, next) => {
   req.session.destroy((err) => {
     console.log(err);
+    console.log('Logout')
     res.redirect("/");
   });
 };

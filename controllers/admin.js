@@ -54,8 +54,8 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: image.path, // Fixed typo
         price: price,
         category: category,
-    colour: colour,
-    quantity: quantity,
+        colour: colour,
+        quantity: quantity,
         description: description,
       },
       errorMessage: errors.array()[0].msg,
@@ -176,11 +176,11 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
   let totalItems;
-  Product.find({ userId: req.user._id, isDeleted: false  })
+  Product.find({ userId: req.user._id, isDeleted: false })
     .countDocuments()
     .then((numProducts) => {
       totalItems = numProducts;
-      return Product.find({ userId: req.user._id, isDeleted: false  }) // Filter out deleted products and users
+      return Product.find({ userId: req.user._id, isDeleted: false }) // Filter out deleted products and users
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })

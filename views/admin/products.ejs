@@ -5,7 +5,7 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
             <main>
-                <% if (prods.length > 0) { %>
+                <% if (prods.length> 0) { %>
                     <div class="grid">
                         <% for (let product of prods) { %>
                             <%if(!product.isDeleted){%>
@@ -29,19 +29,20 @@
                                     </div>
                                     <div class="card__actions">
                                         <a href="/admin/edit-product/<%= product._id %>?edit=true" class="btn">Edit</a>
-                                            <input type="hidden" value="<%= product._id %>" name="productId">
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken%>">
-                                            <button class="btn" type="button" onclick="deleteProduct(this)">Delete</button>
+                                        <input type="hidden" value="<%= product._id %>" name="productId">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken%>">
+                                        <button class="btn" type="button" onclick="deleteProduct(this)">Delete</button>
                                     </div>
                                 </article>
-                            <% } %>
-                        <% } %>
+                                <% } %>
+                                    <% } %>
                     </div>
-            <%- include('../includes/pagination.ejs' ,{currentPage:currentPage , lastPage:lastPage , nextPage:nextPage , hasPreviousPage:hasPreviousPage , hasNextPage:hasNextPage}) %>
+                    <%- include('../includes/pagination.ejs' ,{currentPage:currentPage , lastPage:lastPage ,
+                        nextPage:nextPage , hasPreviousPage:hasPreviousPage , hasNextPage:hasNextPage}) %>
 
-                    <% } else { %>
-                        <h1>No Products Found!</h1>
-                        <% } %>
+                        <% } else { %>
+                            <h1>No Products Found!</h1>
+                            <% } %>
             </main>
             <%- include('../includes/end.ejs') %>
-            <script src="/js/admin.js"></script>
+                <script src="/js/admin.js"></script>

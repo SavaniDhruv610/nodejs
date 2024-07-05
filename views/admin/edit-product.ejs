@@ -16,6 +16,7 @@
                 <input 
                     class="<%= validationErrors.find(e => e.param === 'title') ? 'invalid' : '' %>"
                     type="text" 
+                    placeholder="Title"
                     name="title" 
                     id="title" 
                     value="<% if (editing || hasError) { %><%= product.title %><% } %>">
@@ -32,6 +33,7 @@
                 <input 
                     class="<%= validationErrors.find(e => e.param === 'price') ? 'invalid' : '' %>"
                     type="number" 
+                    placeholder="Price"
                     name="price" 
                     id="price" 
                     step="0.01" 
@@ -42,6 +44,7 @@
                 <input 
                     class="<%= validationErrors.find(e => e.param === 'category') ? 'invalid' : '' %>"
                     type="text" 
+                    placeholder="Category"
                     name="category" 
                     id="category" 
                     value="<% if (editing || hasError) { %><%= product.category %><% } %>">
@@ -51,6 +54,7 @@
                 <input 
                     class="<%= validationErrors.find(e => e.param === 'colour') ? 'invalid' : '' %>"
                     type="text" 
+                    placeholder="Colour"
                     name="colour" 
                     id="colour" 
                     value="<% if (editing || hasError) { %><%= product.colour %><% } %>">
@@ -59,6 +63,7 @@
                 <input 
                     class="<%= validationErrors.find(e => e.param === 'quantity') ? 'invalid' : '' %>"
                     type="number" 
+                    placeholder="Quantity"
                     name="quantity" 
                     id="quantity" 
                     value="<% if (editing || hasError) { %><%= product.quantity %><% } %>">
@@ -68,6 +73,7 @@
                 <textarea 
                     class="<%= validationErrors.find(e => e.param === 'description') ? 'invalid' : '' %>"
                     name="description" 
+                    placeholder="Description"
                     id="description" 
                     rows="5"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
             </div>

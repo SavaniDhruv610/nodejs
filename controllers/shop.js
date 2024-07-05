@@ -112,7 +112,7 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       res.redirect("/cart");
     })
     .catch((err) => {
@@ -142,7 +142,7 @@ exports.getCheckout = (req, res, next) => {
   req.user
     .populate("cart.items.productId")
     .then((user) => {
-      console.log(user.cart.items);
+      // console.log(user.cart.items);
       products = user.cart.items;
       products.forEach((p) => {
         total += +p.quantity * +p.productId.price;

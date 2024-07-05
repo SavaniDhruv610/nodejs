@@ -2,7 +2,7 @@ const express = require("express");
 
 const bcrypt = require("bcryptjs");
 
-const { check, body } = require("express-validator"); 
+const { check, body } = require("express-validator");
 
 const authController = require("../controllers/auth");
 
@@ -66,7 +66,11 @@ router.post("/logout", authController.postLogout);
 
 router.get("/reset", authController.getReset);
 
-router.post("/reset", authController.postReset);
+router.post(
+  "/reset",
+  [check("email").isEmail().normalizeEmail()],
+  authController.postReset
+);
 
 router.get("/reset/:token", authController.getNewPassword);
 
