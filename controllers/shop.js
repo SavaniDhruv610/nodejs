@@ -57,35 +57,40 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  const page = +req.query.page || 1;
+  const page = +req.query.page || 1; // Parse the page number from query parameters or default to 1
   let totalItems;
-  Product.find({ isDeleted: false }) // Filter out deleted products
+
+  Product.find({ isDeleted: false })
     .countDocuments()
     .then((numProducts) => {
       totalItems = numProducts;
-      return Product.find({ isDeleted: false }) // Filter out deleted products
+      return Product.find({ isDeleted: false })
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })
     .then((products) => {
+      // Render the 'shop/index' template with the following data:
       res.render("shop/index", {
-        prods: products,
-        pageTitle: "Shop",
-        path: "/",
-        currentPage: page,
-        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-        hasPreviousPage: page > 1,
-        nextPage: page + 1,
-        previousPage: page - 1,
-        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        prods: products, // Pass the fetched products array to the template
+        pageTitle: "Shop", // Set the page title for the index page
+        path: "/", // Set the current path for navigation or reference
+        currentPage: page, // Pass the current page number to manage pagination
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems, // Calculate if there is a next page
+        hasPreviousPage: page > 1, // Check if there is a previous page
+        nextPage: page + 1, // Calculate the next page number
+        previousPage: page - 1, // Calculate the previous page number
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE), // Calculate the last page based on total items and items per page
+        isAuthenticated: req.session.isLoggedIn, // Pass whether the user is authenticated or not
+        user: req.user, // Pass the currently logged-in user's details to the template
       });
     })
     .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
+      const error = new Error(err); 
+      error.httpStatusCode = 500; 
+      return next(error);  
     });
 };
+
 
 exports.getCart = async (req, res, next) => {
   await req.user
@@ -369,38 +374,36 @@ exports.getInvoice = (req, res, next) => {
     });
 };
 
-exports.like = (req, res) => {
-  const prodId = req.body.productId;
-  console.log('hit')
-  Product.findByIdAndUpdate(
-    prodId,
-    { $push: req.body.userId },
-    { new: true }
-  ).exec((err, result) => {
-    if (err) {
-      return res.status(400).json({
-        message: "post has a like",
-      });
-    } else {
-      res.json(result);
-    }
-  });
-};
 
-exports.unlike = (req, res) => {
-  const prodId = req.body.productId;
-  Product.findByIdAndUpdate(
-    prodId,
-    { $pull: req.body.userId },
-    { new: true }
-  ).exec((err, result) => {
-    if (err) {
-      return res.status(400).json({
-        message: "post has a like",
-      });
-    } else {
-      res.json(result);
-    }
-  });
-};
+exports.like = (req, res, next) => {
+  const productId = req.params.productId;
+  const userId = req.user._id; // Assuming you have user ID in req.user
 
+  Product.findByIdAndUpdate(productId, { $addToSet: { likes: userId } }, { new: true })
+      .then(updatedProduct => {
+          if (!updatedProduct) {
+              return res.status(404).json({ message: 'Product not found' });
+          }
+          res.status(200).json({ message: 'Product liked', product: updatedProduct });
+      })
+      .catch(err => {
+          console.error('Error liking product:', err);
+          res.status(500).json({ message: 'Internal server error' });
+      });
+};
+exports.unlike = (req, res, next) => {
+    const productId = req.params.productId;
+    const userId = req.user._id; // Assuming you have user ID in req.user
+
+    Product.findByIdAndUpdate(productId, { $pull: { likes: userId } }, { new: true })
+        .then(updatedProduct => {
+            if (!updatedProduct) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+            res.status(200).json({ message: 'Product unliked', product: updatedProduct });
+        })
+        .catch(err => {
+            console.error('Error unliking product:', err);
+            res.status(500).json({ message: 'Internal server error' });
+        });
+};

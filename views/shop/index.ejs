@@ -1,43 +1,127 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/product.css">
-</head>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
 
-    <main>
-        <% if (prods.length > 0) { %>
-            <div class="grid">
-                <% for (let product of prods) { %>
-                    <% if (!product.isDeleted) { %>
-                        <article class="card product-item">
-                            <header class="card__header">
-                                <h1 class="product__title"><%= product.title %></h1>
-                            </header>
-                            <div class="card__image">
-                                <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
-                            </div>
-                            <div class="card__content">
-                                <h2 class="product__price">₹<%= product.price %></h2>
-                                <p class="product__description">
-                                    <%= product.description.length > 35 ? product.description.substring(0, 35) + "..." : product.description %>
-                                </p>
-                            </div>
-                            <div class="card__actions">
-                                <a href="/products/<%= product._id %>" class="btn">Details</a>
-                                <% if (isAuthenticated) { %>
-                                    <%- include('../includes/add-to-cart.ejs', { product: product }) %>
+            <main>
+                <% if (prods.length> 0) { %>
+                    <div class="grid">
+                        <% for (let product of prods) { %>
+                            <% if (!product.isDeleted) { %>
+                                <article class="card product-item">
+                                    <header class="card__header">
+                                        <h1 class="product__title">
+                                            <%= product.title %>
+                                        </h1>
+                                    </header>
+                                    <div class="card__image">
+                                        <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
+                                    </div>
+                                    <div class="card__content">
+                                        <h2 class="product__price">₹<%= product.price %>
+                                        </h2>
+                                        <p class="product__description">
+                                            <%= product.description.length> 35 ? product.description.substring(0, 35) +
+                                                "..." : product.description %>
+                                        </p>
+                                    </div>
+                                    <div class="card__actions">
+                                        <a href="/products/<%= product._id %>" class="btn">Details</a>
+                                        <% if (isAuthenticated) { %>
+                                            <%- include('../includes/add-to-cart.ejs', { product: product, csrfToken:
+                                                csrfToken }) %>
+
+                                                <!-- Like Button -->
+                                                <button class="btn like-button"
+                                                    data-product-id="<%= product._id %>">Like</button>
+
+                                                <!-- Unlike Button -->
+                                                <button class="btn unlike-button"
+                                                    data-product-id="<%= product._id %>">Unlike</button>
+                                                <% } %>
+                                    </div>
+                                </article>
                                 <% } %>
-                            </div>
-                        </article>
-                    <% } %>
-                <% } %>
-            </div>
+                                    <% } %>
+                    </div>
 
-            <%- include('../includes/pagination.ejs' ,{currentPage:currentPage , lastPage:lastPage , nextPage:nextPage , hasPreviousPage:hasPreviousPage , hasNextPage:hasNextPage}) %>
-        
-        <% } else { %>
-            <h1>No Products Found!</h1>
-        <% } %>
-    </main>
-    <%- include('../includes/end.ejs') %>
+                    <%- include('../includes/pagination.ejs', { currentPage: currentPage, lastPage: lastPage, nextPage:
+                        nextPage, hasPreviousPage: hasPreviousPage, hasNextPage: hasNextPage }) %>
+
+                        <% } else { %>
+                            <h1>No Products Found!</h1>
+                            <% } %>
+            </main>
+
+            <%- include('../includes/end.ejs') %>
+
+                <!-- jQuery CDN -->
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                <!-- AJAX Script -->
+                <script>
+                    $(document).ready(function () {
+                        // Function to fetch CSRF token
+                        function getCsrfToken() {
+                            return '<%= csrfToken %>'; // Use EJS syntax to get CSRF token
+                        }
+
+                        // Like Button Click Handler
+                        // AJAX Request for liking a product
+                        $('.like-button').on('click', function () {
+                            const productId = $(this).data('product-id');
+                            const csrfToken = getCsrfToken();
+
+                            $.ajax({
+                                url: `/products/like/${productId}`,
+                                method: 'PUT',
+                                headers: {
+                                    'csrf-token': csrfToken
+                                },
+                                success: function (response) {
+                                    console.log('Product liked successfully:', response);
+                                    // Update UI here if needed
+                                    $('input[name="_csrf"]').val(getCsrfToken());
+                                },
+                                error: function (error) {
+                                    console.error('Error liking product:', error);
+                                    alert('Error liking product. Please try again later.');
+                                }
+                            });
+                        });
+
+
+
+                        // Unlike Button Click Handler
+                        $('.unlike-button').on('click', function () {
+                            const productId = $(this).data('product-id');
+                            const csrfToken = getCsrfToken();
+
+                            // AJAX Request
+                            $.ajax({
+                                url: `/products/unlike/${productId}`,
+                                method: 'PUT',
+                                headers: {
+                                    'csrf-token': csrfToken // Pass CSRF token in headers
+                                },
+                                success: function (response) {
+                                    console.log('Product unliked successfully:', response);
+                                    // Update UI here if needed
+
+                                    // Update CSRF token after successful request
+                                    $('input[name="_csrf"]').val(getCsrfToken());
+                                },
+                                error: function (error) {
+                                    console.error('Error unliking product:', error);
+                                    alert('Error unliking product. Please try again later.');
+                                }
+                            });
+                        });
+                    });
+                </script>
+
+    </body>
+
+    </html>

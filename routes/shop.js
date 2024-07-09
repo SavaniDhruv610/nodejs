@@ -27,9 +27,9 @@ router.get("/checkout/success", shopController.getCheckoutSuccess);
 
 router.get("/checkout/cancel", shopController.getCheckout);
 
-router.put('/products/like' ,isAuth,shopController.like )
+router.put('/products/like/:productId', isAuth, shopController.like); // Route for liking a product
 
-router.put('/products/unlike',isAuth,shopController.unlike)
+router.put('/products/unlike/:productId', isAuth, shopController.unlike);
 
 // router.post("/create-order", isAuth, shopController.postOrder);
 
