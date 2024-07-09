@@ -368,3 +368,39 @@ exports.getInvoice = (req, res, next) => {
       next(err);
     });
 };
+
+exports.like = (req, res) => {
+  const prodId = req.body.productId;
+  console.log('hit')
+  Product.findByIdAndUpdate(
+    prodId,
+    { $push: req.body.userId },
+    { new: true }
+  ).exec((err, result) => {
+    if (err) {
+      return res.status(400).json({
+        message: "post has a like",
+      });
+    } else {
+      res.json(result);
+    }
+  });
+};
+
+exports.unlike = (req, res) => {
+  const prodId = req.body.productId;
+  Product.findByIdAndUpdate(
+    prodId,
+    { $pull: req.body.userId },
+    { new: true }
+  ).exec((err, result) => {
+    if (err) {
+      return res.status(400).json({
+        message: "post has a like",
+      });
+    } else {
+      res.json(result);
+    }
+  });
+};
+

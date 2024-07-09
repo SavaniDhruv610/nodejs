@@ -1,88 +1,230 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/forms.css">
-    <link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
    <%- include('../includes/navigation.ejs') %>
 
-    <main>
-        <% if (errorMessage) { %>
-            <div class="user-message user-message--error"><%= errorMessage %></div>
+<main>
+    <% if (errorMessage) { %>
+        <div class="user-message user-message--error"><%= errorMessage %></div>
+    <% } %>
+    <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST" enctype="multipart/form-data">
+        <div class="form-control">
+            <label for="title">Title</label>
+            <input 
+                class="<%= validationErrors.find(e => e.param === 'title') ? 'invalid' : '' %>"
+                type="text" 
+                placeholder="Title"
+                name="title" 
+                id="title" 
+                value="<% if (editing || hasError) { %><%= product.title %><% } %>">
+        </div>
+        <div class="form-control">
+            <label for="image">Image</label>
+            <input 
+                type="file" 
+                name="image" 
+                id="image" >
+        </div>
+        <div class="form-control">
+            <label for="price">Price</label>
+            <input 
+                class="<%= validationErrors.find(e => e.param === 'price') ? 'invalid' : '' %>"
+                type="number" 
+                placeholder="Price"
+                name="price" 
+                id="price" 
+                step="0.01" 
+                value="<% if (editing || hasError) { %><%= product.price %><% } %>">
+        </div>       <!-- Other form controls as per your design -->
+        <div class="form-control">
+            <label for="category">Category</label>
+            <select 
+                class="<%= validationErrors.find(e => e.param === 'category') ? 'invalid' : '' %>"
+                name="category" 
+                id="category"
+                onchange="populateSubcategories()">
+                <option value="">Select Category</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Fashion and Apparel">Fashion and Apparel</option>
+                <option value="Beauty and Personal Care">Beauty and Personal Care</option>
+                <option value="Home and Kitchen">Home and Kitchen</option>
+                <option value="Health and Wellness">Health and Wellness</option>
+                <option value="Books and Media">Books and Media</option>
+                <option value="Toys and Games">Toys and Games</option>
+                <option value="Sports and Outdoors">Sports and Outdoors</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Groceries and Gourmet Food">Groceries and Gourmet Food</option>
+                <option value="Pet Supplies">Pet Supplies</option>
+                <option value="Office Supplies">Office Supplies</option>
+                <option value="Baby Products">Baby Products</option>
+                <option value="Handmade and Artisan Products">Handmade and Artisan Products</option>
+                <option value="Industrial and Scientific">Industrial and Scientific</option>
+            </select>
+        </div>
+        
+        <div class="form-control">
+            <label for="subCategory">Subcategory</label>
+            <select 
+                class="<%= validationErrors.find(e => e.param === 'subCategory') ? 'invalid' : '' %>"
+                name="subCategory" 
+                id="subCategory">
+                <option value="">Select Subcategory</option>
+                <!-- Options will be dynamically populated based on the selected category -->
+            </select>
+        </div>
+        
+        <script>
+            function populateSubcategories() {
+                const categorySelect = document.getElementById('category');
+                const subCategorySelect = document.getElementById('subCategory');
+                const selectedCategory = categorySelect.value;
+        
+                // Clear existing options
+                subCategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+        
+                // Define subcategories based on selected category
+                const subcategories = {
+                    'Electronics': [
+                        'Mobile Phones and Accessories',
+                        'Laptops and Computers',
+                        'Cameras and Photography Equipment',
+                        'Audio Devices (Headphones, Speakers)',
+                        'Home Appliances (TVs, Refrigerators, Washing Machines)'
+                    ],
+                    'Fashion and Apparel': [
+                        "Men's Clothing",
+                        "Women's Clothing",
+                        "Kids' Clothing",
+                        'Footwear',
+                        'Accessories (Bags, Jewelry, Watches)'
+                    ],
+                    'Beauty and Personal Care': [
+                        'Skincare Products',
+                        'Haircare Products',
+                        'Makeup',
+                        'Fragrances',
+                        'Grooming Tools'
+                    ],
+                    'Home and Kitchen': [
+                        'Furniture',
+                        'Home Decor',
+                        'Kitchen Appliances',
+                        'Cookware and Tableware',
+                        'Bedding and Bath'
+                    ],
+                    'Health and Wellness': [
+                        'Supplements',
+                        'Fitness Equipment',
+                        'Medical Supplies',
+                        'Personal Care Products'
+                    ],
+                    'Books and Media': [
+                        'Books (Fiction, Non-Fiction, Academic)',
+                        'Magazines',
+                        'Music CDs and Vinyl Records',
+                        'Movies and TV Shows (DVDs, Blu-rays)'
+                    ],
+                    'Toys and Games': [
+                        "Children's Toys",
+                        'Board Games',
+                        'Video Games and Consoles',
+                        'Educational Toys'
+                    ],
+                    'Sports and Outdoors': [
+                        'Sports Equipment',
+                        'Outdoor Gear',
+                        'Camping and Hiking Supplies',
+                        'Fitness Accessories'
+                    ],
+                    'Automotive': [
+                        'Car Accessories',
+                        'Motorcycle Accessories',
+                        'Automotive Tools and Equipment'
+                    ],
+                    'Groceries and Gourmet Food': [
+                        'Fresh Produce',
+                        'Packaged Foods',
+                        'Beverages',
+                        'Organic and Specialty Foods'
+                    ],
+                    'Pet Supplies': [
+                        'Pet Food',
+                        'Pet Accessories',
+                        'Pet Health Products'
+                    ],
+                    'Office Supplies': [
+                        'Office Furniture',
+                        'Stationery',
+                        'Printers and Scanners',
+                        'Office Electronics'
+                    ],
+                    'Baby Products': [
+                        'Baby Clothing',
+                        'Baby Care Products',
+                        'Baby Gear (Strollers, Car Seats)',
+                        'Toys and Educational Products'
+                    ],
+                    'Handmade and Artisan Products': [
+                        'Handmade Jewelry',
+                        'Art and Craft Supplies',
+                        'Custom-made Gifts'
+                    ],
+                    'Industrial and Scientific': [
+                        'Lab Equipment',
+                        'Industrial Tools',
+                        'Safety Equipment'
+                    ]
+                };
+        
+                // Populate subcategories based on the selected category
+                if (selectedCategory && subcategories[selectedCategory]) {
+                    subcategories[selectedCategory].forEach(subcategory => {
+                        const option = document.createElement('option');
+                        option.value = subcategory;
+                        option.textContent = subcategory;
+                        subCategorySelect.appendChild(option);
+                    });
+                }
+            }
+        </script>
+        
+        <div class="form-control">
+            <label for="title">Colour</label>
+            <input 
+                class="<%= validationErrors.find(e => e.param === 'colour') ? 'invalid' : '' %>"
+                type="text" 
+                placeholder="Colour"
+                name="colour" 
+                id="colour" 
+                value="<% if (editing || hasError) { %><%= product.colour %><% } %>">
+        </div>   <div class="form-control">
+            <label for="title">Quantity</label>
+            <input 
+                class="<%= validationErrors.find(e => e.param === 'quantity') ? 'invalid' : '' %>"
+                type="number" 
+                placeholder="Quantity"
+                name="quantity" 
+                id="quantity" 
+                value="<% if (editing || hasError) { %><%= product.quantity %><% } %>">
+        </div>
+        <div class="form-control">
+            <label for="description">Description</label>
+            <textarea 
+                class="<%= validationErrors.find(e => e.param === 'description') ? 'invalid' : '' %>"
+                name="description" 
+                placeholder="Description"
+                id="description" 
+                rows="5"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
+        </div>
+        <% if (editing) { %>
+            <input type="hidden" value="<%= product._id %>" name="productId">
         <% } %>
-        <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST" enctype="multipart/form-data">
-            <div class="form-control">
-                <label for="title">Title</label>
-                <input 
-                    class="<%= validationErrors.find(e => e.param === 'title') ? 'invalid' : '' %>"
-                    type="text" 
-                    placeholder="Title"
-                    name="title" 
-                    id="title" 
-                    value="<% if (editing || hasError) { %><%= product.title %><% } %>">
-            </div>
-            <div class="form-control">
-                <label for="image">Image</label>
-                <input 
-                    type="file" 
-                    name="image" 
-                    id="image" >
-            </div>
-            <div class="form-control">
-                <label for="price">Price</label>
-                <input 
-                    class="<%= validationErrors.find(e => e.param === 'price') ? 'invalid' : '' %>"
-                    type="number" 
-                    placeholder="Price"
-                    name="price" 
-                    id="price" 
-                    step="0.01" 
-                    value="<% if (editing || hasError) { %><%= product.price %><% } %>">
-            </div>
-            <div class="form-control">
-                <label for="title">Category</label>
-                <input 
-                    class="<%= validationErrors.find(e => e.param === 'category') ? 'invalid' : '' %>"
-                    type="text" 
-                    placeholder="Category"
-                    name="category" 
-                    id="category" 
-                    value="<% if (editing || hasError) { %><%= product.category %><% } %>">
-            </div>
-            <div class="form-control">
-                <label for="title">Colour</label>
-                <input 
-                    class="<%= validationErrors.find(e => e.param === 'colour') ? 'invalid' : '' %>"
-                    type="text" 
-                    placeholder="Colour"
-                    name="colour" 
-                    id="colour" 
-                    value="<% if (editing || hasError) { %><%= product.colour %><% } %>">
-            </div>   <div class="form-control">
-                <label for="title">Quantity</label>
-                <input 
-                    class="<%= validationErrors.find(e => e.param === 'quantity') ? 'invalid' : '' %>"
-                    type="number" 
-                    placeholder="Quantity"
-                    name="quantity" 
-                    id="quantity" 
-                    value="<% if (editing || hasError) { %><%= product.quantity %><% } %>">
-            </div>
-            <div class="form-control">
-                <label for="description">Description</label>
-                <textarea 
-                    class="<%= validationErrors.find(e => e.param === 'description') ? 'invalid' : '' %>"
-                    name="description" 
-                    placeholder="Description"
-                    id="description" 
-                    rows="5"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
-            </div>
-            <% if (editing) { %>
-                <input type="hidden" value="<%= product._id %>" name="productId">
-            <% } %>
 
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product<% } %></button>
-        </form>
-    </main>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product<% } %></button>
+    </form>
+</main>
 <%- include('../includes/end.ejs') %>

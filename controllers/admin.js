@@ -23,6 +23,7 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const colour = req.body.colour;
   const category = req.body.category;
+  const subCategory = req.body.subCategory;
   const quantity = req.body.quantity;
   const description = req.body.description;
   if (!image) {
@@ -54,6 +55,7 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: image.path, // Fixed typo
         price: price,
         category: category,
+        subCategory: subCategory,
         colour: colour,
         quantity: quantity,
         description: description,
@@ -71,6 +73,7 @@ exports.postAddProduct = (req, res, next) => {
     description: description,
     imageUrl: imageUrl,
     category: category,
+    subCategory: subCategory,
     colour: colour,
     quantity: quantity,
     userId: req.user,
@@ -116,7 +119,6 @@ exports.getEditProduct = (req, res, next) => {
       return next(error);
     });
 };
-
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
@@ -124,6 +126,7 @@ exports.postEditProduct = (req, res, next) => {
   const updatedColour = req.body.colour;
   const updatedQuantity = req.body.quantity;
   const updatedCategory = req.body.category;
+  const updatedSubCategory = req.body.subCategory;
   const image = req.file;
   const updatedDesc = req.body.description;
 
@@ -139,6 +142,10 @@ exports.postEditProduct = (req, res, next) => {
         title: updatedTitle,
         price: updatedPrice,
         description: updatedDesc,
+        colour: updatedColour,
+        quantity: updatedQuantity,
+        category: updatedCategory,
+        subCategory: updatedSubCategory,
         _id: prodId,
       },
       errorMessage: errors.array()[0].msg,
@@ -148,30 +155,50 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then((product) => {
-      if (product.userId.toString() !== req.user._id.toString()) {
-        return res.redirect("/");
+      if (!product) {
+        const error = new Error("Product not found.");
+        error.statusCode = 404;
+        throw error;
       }
+      if (product.userId.toString() !== req.user._id.toString()) {
+        const error = new Error("Unauthorized access.");
+        error.statusCode = 403;
+        throw error;
+      }
+
+      console.log("Found Product:", product);
+
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
       product.colour = updatedColour;
       product.quantity = updatedQuantity;
       product.category = updatedCategory;
+      product.subCategory = updatedSubCategory;
+
       if (image) {
-        fileHelper.deleteFile(product.imageUrl);
+        console.log("New Image Uploaded:", image.path);
+        // Replace with your fileHelper logic to delete old image
+        // fileHelper.deleteFile(product.imageUrl);
         product.imageUrl = image.path;
       }
-      return product.save().then((result) => {
-        console.log("UPDATED PRODUCT!");
-        res.redirect("/admin/products");
-      });
+
+      console.log("Product going to be saved:", product);
+
+      return product.save();
+    })
+    .then((result) => {
+      console.log("UPDATED PRODUCT:", result);
+      res.redirect("/admin/products");
     })
     .catch((err) => {
+      console.error("Error updating product:", err);
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
 };
+
 
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
