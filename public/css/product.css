@@ -8,7 +8,7 @@ body {
 main {
     padding: 1.5rem;
     background-color: #f9f9f9;
-    height: 92vh;
+    height: auto;
 }
 
 .grid {

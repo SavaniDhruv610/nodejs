@@ -8,32 +8,44 @@ body {
 main {
     padding: 1.5rem;
     background-color: #f9f9f9;
+    height: auto;
 }
 
 .grid {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    /* Reduced gap between cards */
     justify-content: center;
 }
 
 .card {
     background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
     border-radius: 10px;
     overflow: hidden;
     transition: transform 0.3s;
     width: 18%;
+    /* Adjusted width to fit more items in a row */
     margin: 0.5rem;
+    /* Reduced margin between cards */
 }
 
 .card:hover {
     transform: translateY(-5px);
 }
 
+.card__header,
+.card__content,
+.card__actions {
+    padding: 0.5rem;
+    /* Reduced padding inside the cards */
+}
+
 .card__image {
     width: 100%;
     height: 150px;
+    /* Reduced height for images */
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -48,28 +60,26 @@ main {
     display: block;
 }
 
-.card__content {
-    padding: 0.5rem;
-    text-align: center;
-}
-
 .card__actions {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
+    /* Reduced padding inside the actions section */
     border-top: 1px solid #f0f0f0;
 }
 
 .btn {
     display: inline-block;
     padding: 10px 15px;
+    /* Adjusted padding for buttons */
     color: #ffffff;
     background-color: gray;
     border: none;
     border-radius: 5px;
     text-decoration: none;
     font-size: 1rem;
+    /* Reduced font size for buttons */
     transition: background-color 0.3s;
 }
 
@@ -77,14 +87,23 @@ main {
     background-color: green;
 }
 
+.product-form {
+    width: 30rem;
+    max-width: 90%;
+    margin: auto;
+    display: block;
+}
+
 .product-item {
     width: 18%;
+    /* Adjusted width to fit more items in a row */
     max-width: 95%;
     margin: 0rem;
 }
 
 .product__title {
     font-size: 1.1rem;
+    /* Reduced font size for product titles */
     text-align: center;
     color: #333;
 }
@@ -94,12 +113,14 @@ main {
     color: #4d4d4d;
     margin-bottom: 0.5rem;
     font-size: 1rem;
+    /* Reduced font size for product prices */
 }
 
 .product__description {
     text-align: center;
     color: #666;
     font-size: 0.9rem;
+    /* Reduced font size for product descriptions */
 }
 
 /* Responsive Styles */
@@ -110,24 +131,28 @@ main {
 
     .card {
         flex: 1 1 20%;
+        /* Adjusted width for medium screens */
     }
 }
 
 @media (max-width: 992px) {
     .card {
         flex: 1 1 25%;
+        /* Adjusted width for small screens */
     }
 }
 
 @media (max-width: 768px) {
     .card {
         flex: 1 1 40%;
+        /* Adjusted width for extra small screens */
     }
 }
 
 @media (max-width: 576px) {
     .card {
         flex: 1 1 100%;
+        /* Adjusted width for mobile screens */
     }
 
     main {
@@ -142,21 +167,103 @@ main {
 
     .btn {
         font-size: 0.8rem;
+        /* Further reduced font size for buttons on mobile */
         padding: 0.4rem 0.8rem;
     }
 
     .product__title {
         font-size: 1rem;
+        /* Further reduced font size for product titles on mobile */
     }
 
     .product__price {
         font-size: 0.9rem;
+        /* Further reduced font size for product prices on mobile */
     }
 
     .product__description {
         font-size: 0.8rem;
+        /* Further reduced font size for product descriptions on mobile */
     }
 }
+
+.like-button, .dislike-button {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    line-height: 50px;
+    border-radius: 50%;
+    border: 1px solid;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.like-button {
+    color: rgba(0,150,136,1);
+    background-color: rgba(38,166,154,0.3);
+    border-color: rgba(0,150,136,1);
+}
+
+.dislike-button {
+    color: rgba(255,82,82,1);
+    background-color: rgba(255,138,128,0.3);
+    border-color: rgba(255,82,82,1);
+}
+
+.learnmore {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: rgba(0,151,167,1);
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.like-button, .dislike-button {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    line-height: 50px;
+    border-radius: 50%;
+    border: 1px solid;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.like-button {
+    color: rgba(0,150,136,1);
+    background-color: rgba(38,166,154,0.3);
+    border-color: rgba(0,150,136,1);
+}
+
+.dislike-button {
+    color: rgba(255,82,82,1);
+    background-color: rgba(255,138,128,0.3);
+    border-color: rgba(255,82,82,1);
+}
+
+.learnmore {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: rgba(0,151,167,1);
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+
+
+
 
 button.like-button,
 button.dislike-button {
@@ -183,197 +290,6 @@ button.dislike-button {
     border-color: rgba(255, 82, 82, 1);
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-main {
-    padding: 1.5rem;
-    background-color: #f9f9f9;
-}
 
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-}
 
-.card {
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s;
-    flex: 1 1 21%;
-    margin: 1rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.card__image {
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.card__image img {
-    width: 100%;
-    height: 250px;
-    max-width: 100%;
-    display: block;
-}
-
-.card__content {
-    padding: 1rem;
-    text-align: center;
-}
-
-.card__actions {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 1rem;
-    border-top: 1px solid #f0f0f0;
-}
-
-.btn {
-    display: inline-block;
-    padding: 10px 15px;
-    color: #ffffff;
-    background-color: gray;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-}
-
-.btn:hover {
-    background-color: green;
-}
-
-.product-item {
-    flex: 1;
-    margin: 1rem;
-}
-
-.product__title {
-    font-size: 1.1rem;
-    color: #333;
-}
-
-.product__price {
-    color: #4d4d4d;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-}
-
-.product__description {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-/* Responsive Styles */
-@media (max-width: 1200px) {
-    .card {
-        flex: 1 1 30%;
-    }
-}
-
-@media (max-width: 992px) {
-    .card {
-        flex: 1 1 45%;
-    }
-}
-
-@media (max-width: 768px) {
-    .card {
-        flex: 1 1 100%;
-    }
-}
-
-.like-button, .dislike-button {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto;
-    line-height: 50px;
-    border-radius: 50%;
-    border: 1px solid;
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.like-button {
-    color: rgba(0,150,136,1);
-    background-color: rgba(38,166,154,0.3);
-    border-color: rgba(0,150,136,1);
-}
-
-.dislike-button {
-    color: rgba(255,82,82,1);
-    background-color: rgba(255,138,128,0.3);
-    border-color: rgba(255,82,82,1);
-}
-
-.learnmore {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: rgba(0,151,167,1);
-    border-radius: 5px;
-    text-transform: uppercase;
-    font-size: 16px;
-    color: #fff;
-    letter-spacing: 1px;
-}
-
-.like-button, .dislike-button {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto;
-    line-height: 50px;
-    border-radius: 50%;
-    border: 1px solid;
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.like-button {
-    color: rgba(0,150,136,1);
-    background-color: rgba(38,166,154,0.3);
-    border-color: rgba(0,150,136,1);
-}
-
-.dislike-button {
-    color: rgba(255,82,82,1);
-    background-color: rgba(255,138,128,0.3);
-    border-color: rgba(255,82,82,1);
-}
-
-.learnmore {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: rgba(0,151,167,1);
-    border-radius: 5px;
-    text-transform: uppercase;
-    font-size: 16px;
-    color: #fff;
-    letter-spacing: 1px;
-}

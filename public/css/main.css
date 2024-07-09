@@ -282,6 +282,7 @@ form {
   border-color: #cccccc;
   pointer-events: none;
   cursor: not-allowed;
+  width: 110px;
 }
 
 .pagination a.disabled:hover {
@@ -296,7 +297,7 @@ form {
   margin-right: 0;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1250px) {
   .main-header__nav {
     display: flex;
   }

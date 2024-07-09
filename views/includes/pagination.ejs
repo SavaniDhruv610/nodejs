@@ -1,8 +1,8 @@
 <div class="pagination">
     <% if (hasPreviousPage) { %>
-        <a href="?page=<%= currentPage - 1 %>">Previous</a>
+        <a href="?page=<%= currentPage - 1 %>">< Previous</a>
     <% } else { %>
-        <a class="disabled" href="#">Previous</a>
+        <a class="disabled" href="#"> < Previous</a>
     <% } %>
 
     <% for (let i = 1; i <= lastPage; i++) { %>
@@ -11,9 +11,11 @@
 
     <% if (hasNextPage) { %>
         <a href="?page=<%= currentPage + 1 %>">Next</a>
+        <a href="?page=<%= currentPage + 1 %>"><</a>
     <% } else { %>
-        <a class="disabled" href="#">Next</a>
+        <a class="disabled" href="#">Next > </a>
     <% } %>
+
     <br>
     <br>
     <br>
