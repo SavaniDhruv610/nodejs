@@ -25,7 +25,8 @@
                                 <p class="product__color">Color: <%= product.colour %></p>
                                 <p class="product__category">Category: <%= product.category %></p>
                                 <p class="product__description" onclick="toggleDescription(this)">
-                                    <%= product.description %>
+                                    <%= product.description.length > 85 ? product.description.substring(0, 85) + "..." : product.description %>
+
                                 </p>
                             </div>
                             <div class="card__actions">

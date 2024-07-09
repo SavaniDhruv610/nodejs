@@ -1,11 +1,12 @@
-/* Styles for main content */
+/* Main content */
 main.centered {
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #f9f9f9;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    background-color: #ffffff;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    text-align: left; /* Change text-align to left */
+    font-family: Arial, sans-serif;
 }
 
 /* Product details layout */
@@ -14,30 +15,40 @@ main.centered {
     flex-wrap: wrap;
     gap: 20px;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: space-between;
 }
 
+/* Image section */
 .product-details .image {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    max-width: 40%; /* Adjust width as needed */
+    margin-right: 20px; /* Add some margin */
 }
 
 .product-details .image img {
     max-width: 100%;
     height: auto;
-    max-height: 400px;
 }
 
+/* Details section */
 .product-details .details {
     flex: 2;
-    text-align: left;
+    max-width: 55%; /* Adjust width as needed */
 }
 
-.product-details .details h2,
+.product-details .details h2 {
+    font-size: 1.5rem;
+    color: #b12704;
+    margin-bottom: 10px;
+}
+
 .product-details .details p {
     margin: 10px 0;
+    font-size: 1rem;
+    color: #555;
 }
 
 .product-details .details .btn {
@@ -48,8 +59,37 @@ main.centered {
     text-decoration: none;
     border-radius: 5px;
     margin-top: 20px;
+    transition: background-color 0.3s;
 }
 
 .product-details .details .btn:hover {
     background-color: #e68a00;
+}
+
+/* Additional details */
+.product-details .details .additional-info {
+    margin-top: 20px;
+}
+
+.product-details .details .additional-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.product-details .details .stock-info {
+    margin: 20px 0;
+    font-size: 1.1rem;
+    color: #008a00;
+}
+
+.product-details .details .delivery-info {
+    margin: 20px 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.product-details .details .delivery-info span {
+    color: #b12704;
+    font-weight: bold;
 }

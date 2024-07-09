@@ -169,9 +169,9 @@ form {
   align-items: stretch;
 }
 
-.card {
+/* .card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-}
+} */
 
 .card__header,
 .card__content {
