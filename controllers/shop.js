@@ -85,12 +85,11 @@ exports.getIndex = (req, res, next) => {
       });
     })
     .catch((err) => {
-      const error = new Error(err); 
-      error.httpStatusCode = 500; 
-      return next(error);  
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
-
 
 exports.getCart = async (req, res, next) => {
   await req.user
@@ -114,10 +113,12 @@ exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
     .then((product) => {
-      return req.user.addToCart(product);
+      if (!product) {
+        throw new Error("Product not found");
+      }
+      return req.user.addToCart(product); // Assuming addToCart method handles adding to user's cart
     })
     .then((result) => {
-      // console.log(result);
       res.redirect("/cart");
     })
     .catch((err) => {
@@ -189,34 +190,48 @@ exports.getCheckout = (req, res, next) => {
 };
 
 exports.getCheckoutSuccess = async (req, res, next) => {
-  await req.user
-    .populate("cart.items.productId")
-    .then((user) => {
-      const products = user.cart.items.map((i) => {
-        return { quantity: i.quantity, product: { ...i.productId._doc } };
-      });
-      const order = new Order({
-        user: {
-          email: req.user.email,
-          userId: req.user,
-        },
-        products: products,
-      });
-      return order.save();
-    })
-    .then((result) => {
-      return req.user.clearCart();
-    })
-    .then(() => {
-      res.redirect("/orders");
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
-};
+  try {
+    // Populate user's cart items with product details
+    await req.user.populate("cart.items.productId");
+    // Map cart items to order products
+    const products = req.user.cart.items.map((item) => ({
+      product: { ...item.productId._doc }, // Use _doc to get plain object if needed
+      quantity: item.quantity,
+    }));
 
+    // Create a new order instance
+    const order = new Order({
+      user: {
+        email: req.user.email,
+        userId: req.user._id,
+      },
+      products: products,
+    });
+
+    // Save the order to database
+    await order.save();
+
+    // Update product quantities in the database
+    for (const item of products) {
+      const product = await Product.findById(item.product._id);
+      if (!product) {
+        throw new Error("Product not found");
+      }
+      product.quantity -= item.quantity;
+      await product.save();
+    }
+
+    // Clear the user's cart after successful order
+    await req.user.clearCart();
+
+    // Redirect to orders page
+    res.redirect("/orders");
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
+};
 // exports.postOrder = async (req, res, next) => {
 //   await req.user
 //     .populate("cart.items.productId")
@@ -374,36 +389,47 @@ exports.getInvoice = (req, res, next) => {
     });
 };
 
-
 exports.like = (req, res, next) => {
   const productId = req.params.productId;
   const userId = req.user._id; // Assuming you have user ID in req.user
 
-  Product.findByIdAndUpdate(productId, { $addToSet: { likes: userId } }, { new: true })
-      .then(updatedProduct => {
-          if (!updatedProduct) {
-              return res.status(404).json({ message: 'Product not found' });
-          }
-          res.status(200).json({ message: 'Product liked', product: updatedProduct });
-      })
-      .catch(err => {
-          console.error('Error liking product:', err);
-          res.status(500).json({ message: 'Internal server error' });
-      });
+  Product.findByIdAndUpdate(
+    productId,
+    { $addToSet: { likes: userId } },
+    { new: true }
+  )
+    .then((updatedProduct) => {
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res
+        .status(200)
+        .json({ message: "Product liked", product: updatedProduct });
+    })
+    .catch((err) => {
+      console.error("Error liking product:", err);
+      res.status(500).json({ message: "Internal server error" });
+    });
 };
 exports.unlike = (req, res, next) => {
-    const productId = req.params.productId;
-    const userId = req.user._id; // Assuming you have user ID in req.user
+  const productId = req.params.productId;
+  const userId = req.user._id; // Assuming you have user ID in req.user
 
-    Product.findByIdAndUpdate(productId, { $pull: { likes: userId } }, { new: true })
-        .then(updatedProduct => {
-            if (!updatedProduct) {
-                return res.status(404).json({ message: 'Product not found' });
-            }
-            res.status(200).json({ message: 'Product unliked', product: updatedProduct });
-        })
-        .catch(err => {
-            console.error('Error unliking product:', err);
-            res.status(500).json({ message: 'Internal server error' });
-        });
+  Product.findByIdAndUpdate(
+    productId,
+    { $pull: { likes: userId } },
+    { new: true }
+  )
+    .then((updatedProduct) => {
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res
+        .status(200)
+        .json({ message: "Product unliked", product: updatedProduct });
+    })
+    .catch((err) => {
+      console.error("Error unliking product:", err);
+      res.status(500).json({ message: "Internal server error" });
+    });
 };
