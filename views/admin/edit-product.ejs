@@ -1,230 +1,898 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
-</head>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
 
-<body>
-   <%- include('../includes/navigation.ejs') %>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
 
-<main>
-    <% if (errorMessage) { %>
-        <div class="user-message user-message--error"><%= errorMessage %></div>
-    <% } %>
-    <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST" enctype="multipart/form-data">
-        <div class="form-control">
-            <label for="title">Title</label>
-            <input 
-                class="<%= validationErrors.find(e => e.param === 'title') ? 'invalid' : '' %>"
-                type="text" 
-                placeholder="Title"
-                name="title" 
-                id="title" 
-                value="<% if (editing || hasError) { %><%= product.title %><% } %>">
-        </div>
-        <div class="form-control">
-            <label for="image">Image</label>
-            <input 
-                type="file" 
-                name="image" 
-                id="image" >
-        </div>
-        <div class="form-control">
-            <label for="price">Price</label>
-            <input 
-                class="<%= validationErrors.find(e => e.param === 'price') ? 'invalid' : '' %>"
-                type="number" 
-                placeholder="Price"
-                name="price" 
-                id="price" 
-                step="0.01" 
-                value="<% if (editing || hasError) { %><%= product.price %><% } %>">
-        </div>       <!-- Other form controls as per your design -->
-        <div class="form-control">
-            <label for="category">Category</label>
-            <select 
-                class="<%= validationErrors.find(e => e.param === 'category') ? 'invalid' : '' %>"
-                name="category" 
-                id="category"
-                onchange="populateSubcategories()">
-                <option value="">Select Category</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Fashion and Apparel">Fashion and Apparel</option>
-                <option value="Beauty and Personal Care">Beauty and Personal Care</option>
-                <option value="Home and Kitchen">Home and Kitchen</option>
-                <option value="Health and Wellness">Health and Wellness</option>
-                <option value="Books and Media">Books and Media</option>
-                <option value="Toys and Games">Toys and Games</option>
-                <option value="Sports and Outdoors">Sports and Outdoors</option>
-                <option value="Automotive">Automotive</option>
-                <option value="Groceries and Gourmet Food">Groceries and Gourmet Food</option>
-                <option value="Pet Supplies">Pet Supplies</option>
-                <option value="Office Supplies">Office Supplies</option>
-                <option value="Baby Products">Baby Products</option>
-                <option value="Handmade and Artisan Products">Handmade and Artisan Products</option>
-                <option value="Industrial and Scientific">Industrial and Scientific</option>
-            </select>
-        </div>
-        
-        <div class="form-control">
-            <label for="subCategory">Subcategory</label>
-            <select 
-                class="<%= validationErrors.find(e => e.param === 'subCategory') ? 'invalid' : '' %>"
-                name="subCategory" 
-                id="subCategory">
-                <option value="">Select Subcategory</option>
-                <!-- Options will be dynamically populated based on the selected category -->
-            </select>
-        </div>
-        
-        <script>
-            function populateSubcategories() {
-                const categorySelect = document.getElementById('category');
-                const subCategorySelect = document.getElementById('subCategory');
-                const selectedCategory = categorySelect.value;
-        
-                // Clear existing options
-                subCategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
-        
-                // Define subcategories based on selected category
-                const subcategories = {
-                    'Electronics': [
-                        'Mobile Phones and Accessories',
-                        'Laptops and Computers',
-                        'Cameras and Photography Equipment',
-                        'Audio Devices (Headphones, Speakers)',
-                        'Home Appliances (TVs, Refrigerators, Washing Machines)'
-                    ],
-                    'Fashion and Apparel': [
-                        "Men's Clothing",
-                        "Women's Clothing",
-                        "Kids' Clothing",
-                        'Footwear',
-                        'Accessories (Bags, Jewelry, Watches)'
-                    ],
-                    'Beauty and Personal Care': [
-                        'Skincare Products',
-                        'Haircare Products',
-                        'Makeup',
-                        'Fragrances',
-                        'Grooming Tools'
-                    ],
-                    'Home and Kitchen': [
-                        'Furniture',
-                        'Home Decor',
-                        'Kitchen Appliances',
-                        'Cookware and Tableware',
-                        'Bedding and Bath'
-                    ],
-                    'Health and Wellness': [
-                        'Supplements',
-                        'Fitness Equipment',
-                        'Medical Supplies',
-                        'Personal Care Products'
-                    ],
-                    'Books and Media': [
-                        'Books (Fiction, Non-Fiction, Academic)',
-                        'Magazines',
-                        'Music CDs and Vinyl Records',
-                        'Movies and TV Shows (DVDs, Blu-rays)'
-                    ],
-                    'Toys and Games': [
-                        "Children's Toys",
-                        'Board Games',
-                        'Video Games and Consoles',
-                        'Educational Toys'
-                    ],
-                    'Sports and Outdoors': [
-                        'Sports Equipment',
-                        'Outdoor Gear',
-                        'Camping and Hiking Supplies',
-                        'Fitness Accessories'
-                    ],
-                    'Automotive': [
-                        'Car Accessories',
-                        'Motorcycle Accessories',
-                        'Automotive Tools and Equipment'
-                    ],
-                    'Groceries and Gourmet Food': [
-                        'Fresh Produce',
-                        'Packaged Foods',
-                        'Beverages',
-                        'Organic and Specialty Foods'
-                    ],
-                    'Pet Supplies': [
-                        'Pet Food',
-                        'Pet Accessories',
-                        'Pet Health Products'
-                    ],
-                    'Office Supplies': [
-                        'Office Furniture',
-                        'Stationery',
-                        'Printers and Scanners',
-                        'Office Electronics'
-                    ],
-                    'Baby Products': [
-                        'Baby Clothing',
-                        'Baby Care Products',
-                        'Baby Gear (Strollers, Car Seats)',
-                        'Toys and Educational Products'
-                    ],
-                    'Handmade and Artisan Products': [
-                        'Handmade Jewelry',
-                        'Art and Craft Supplies',
-                        'Custom-made Gifts'
-                    ],
-                    'Industrial and Scientific': [
-                        'Lab Equipment',
-                        'Industrial Tools',
-                        'Safety Equipment'
-                    ]
-                };
-        
-                // Populate subcategories based on the selected category
-                if (selectedCategory && subcategories[selectedCategory]) {
-                    subcategories[selectedCategory].forEach(subcategory => {
-                        const option = document.createElement('option');
-                        option.value = subcategory;
-                        option.textContent = subcategory;
-                        subCategorySelect.appendChild(option);
-                    });
-                }
-            }
-        </script>
-        
-        <div class="form-control">
-            <label for="title">Colour</label>
-            <input 
-                class="<%= validationErrors.find(e => e.param === 'colour') ? 'invalid' : '' %>"
-                type="text" 
-                placeholder="Colour"
-                name="colour" 
-                id="colour" 
-                value="<% if (editing || hasError) { %><%= product.colour %><% } %>">
-        </div>   <div class="form-control">
-            <label for="title">Quantity</label>
-            <input 
-                class="<%= validationErrors.find(e => e.param === 'quantity') ? 'invalid' : '' %>"
-                type="number" 
-                placeholder="Quantity"
-                name="quantity" 
-                id="quantity" 
-                value="<% if (editing || hasError) { %><%= product.quantity %><% } %>">
-        </div>
-        <div class="form-control">
-            <label for="description">Description</label>
-            <textarea 
-                class="<%= validationErrors.find(e => e.param === 'description') ? 'invalid' : '' %>"
-                name="description" 
-                placeholder="Description"
-                id="description" 
-                rows="5"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
-        </div>
-        <% if (editing) { %>
-            <input type="hidden" value="<%= product._id %>" name="productId">
-        <% } %>
+            <main>
+                <% if (errorMessage) { %>
+                    <div class="user-message user-message--error">
+                        <%= errorMessage %>
+                    </div>
+                    <% } %>
+                        <form class="product-form"
+                            action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>"
+                            method="POST" enctype="multipart/form-data">
+                            <div class="form-control">
+                                <label for="title">Title</label>
+                                <input class="<%= validationErrors.find(e => e.param === 'title') ? 'invalid' : '' %>"
+                                    type="text" placeholder="Title" name="title" id="title"
+                                    value="<% if (editing || hasError) { %><%= product.title %><% } %>">
+                            </div>
+                            <div class="form-control">
+                                <label for="image">Image</label>
+                                <input type="file" name="image" id="image">
+                            </div>
+                            <div class="form-control">
+                                <label for="price">Price</label>
+                                <input class="<%= validationErrors.find(e => e.param === 'price') ? 'invalid' : '' %>"
+                                    type="number" placeholder="Price" name="price" id="price" step="0.01"
+                                    value="<% if (editing || hasError) { %><%= product.price %><% } %>">
+                            </div>
+                            <div class="form-control">
+                                <label for="category">Category</label>
+                                <select
+                                    class="<%= validationErrors.find(e => e.param === 'category') ? 'invalid' : '' %>"
+                                    name="category" id="category" onchange="populateSubcategories()">
+                                    <option value="" <% if (!product.category) { %>selected<% } %>>Select Category</option>
+                                    <option value="Electronics" <% if (product.category === 'Electronics') { %>selected<% } %>>Electronics</option>
+                                    <option value="Fashion and Apparel" <% if (product.category === 'Fashion and Apparel') { %>selected<% } %>>Fashion and Apparel</option>
+                                    <option value="Beauty and Personal Care" <% if (product.category === 'Beauty and Personal Care') { %>selected<% } %>>Beauty and Personal Care</option>
+                                    <option value="Home and Kitchen" <% if (product.category === 'Home and Kitchen') { %>selected<% } %>>Home and Kitchen</option>
+                                    <option value="Health and Wellness" <% if (product.category === 'Health and Wellness') { %>selected<% } %>>Health and Wellness</option>
+                                    <option value="Books and Media" <% if (product.category === 'Books and Media') { %>selected<% } %>>Books and Media</option>
+                                    <option value="Toys and Games" <% if (product.category === 'Toys and Games') { %>selected<% } %>>Toys and Games</option>
+                                    <option value="Sports and Outdoors" <% if (product.category === 'Sports and Outdoors') { %>selected<% } %>>Sports and Outdoors</option>
+                                    <option value="Automotive" <% if (product.category === 'Automotive') { %>selected<% } %>>Automotive</option>
+                                    <option value="Groceries and Gourmet Food" <% if (product.category === 'Groceries and Gourmet Food') { %>selected<% } %>>Groceries and Gourmet Food</option>
+                                    <option value="Pet Supplies" <% if (product.category === 'Pet Supplies') { %>selected<% } %>>Pet Supplies</option>
+                                    <option value="Office Supplies" <% if (product.category === 'Office Supplies') { %>selected<% } %>>Office Supplies</option>
+                                    <option value="Baby Products" <% if (product.category === 'Baby Products') { %>selected<% } %>>Baby Products</option>
+                                    <option value="Handmade and Artisan Products" <% if (product.category === 'Handmade and Artisan Products') { %>selected<% } %>>Handmade and Artisan Products</option>
+                                    <option value="Industrial and Scientific" <% if (product.category === 'Industrial and Scientific') { %>selected<% } %>>Industrial and Scientific</option>
+                                </select>
+                            </div>
 
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product<% } %></button>
-    </form>
-</main>
-<%- include('../includes/end.ejs') %>
+                            <div class="form-control">
+                                <label for="subCategory">Subcategory</label>
+                                <select class="<%= validationErrors.find(e => e.param === 'subCategory') ? 'invalid' : '' %>"
+                                        name="subCategory" id="subCategory" onchange="populateSubsubcategories()">
+                                    <option value="">Select Subcategory</option>
+                                    <!-- Options will be dynamically populated based on the selected category -->
+                                    <% if (product.subCategory) { %>
+                                        <option value="<%= product.subCategory %>" selected><%= product.subCategory %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            
+                            <div class="form-control">
+                                <label for="subSubCategory">Subsubcategory</label>
+                                <select class="<%= validationErrors.find(e => e.param === 'subSubCategory') ? 'invalid' : '' %>"
+                                        name="subSubCategory" id="subSubCategory">
+                                    <option value="">Select Subsubcategory</option>
+                                    <!-- Options will be dynamically populated based on the selected subcategory -->
+                                    <% if (product.subSubCategory) { %>
+                                        <option value="<%= product.subSubCategory %>" selected><%= product.subSubCategory %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            
+                            <script>
+                                function populateSubcategories() {
+                                    const categorySelect = document.getElementById('category');
+                                    const subCategorySelect = document.getElementById('subCategory');
+                                    const selectedCategory = categorySelect.value;
+
+                                    // Clear existing options
+                                    subCategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+
+                                    // Define subcategories based on selected category
+                                    const subcategories = {
+                                        'Electronics': [
+                                            'Mobile Phones and Accessories',
+                                            'Laptops and Computers',
+                                            'Cameras and Photography Equipment',
+                                            'Audio Devices (Headphones, Speakers)',
+                                            'Home Appliances (TVs, Refrigerators, Washing Machines)'
+                                        ],
+                                        'Fashion and Apparel': [
+                                            "Men's Clothing",
+                                            "Women's Clothing",
+                                            "Kids' Clothing",
+                                            'Footwear',
+                                            'Accessories (Bags, Jewelry, Watches)'
+                                        ],
+                                        'Beauty and Personal Care': [
+                                            'Skincare Products',
+                                            'Haircare Products',
+                                            'Makeup',
+                                            'Fragrances',
+                                            'Grooming Tools'
+                                        ],
+                                        'Home and Kitchen': [
+                                            'Furniture',
+                                            'Home Decor',
+                                            'Kitchen Appliances',
+                                            'Cookware and Tableware',
+                                            'Bedding and Bath'
+                                        ],
+                                        'Health and Wellness': [
+                                            'Supplements',
+                                            'Fitness Equipment',
+                                            'Medical Supplies',
+                                            'Personal Care Products'
+                                        ],
+                                        'Books and Media': [
+                                            'Books (Fiction, Non-Fiction, Academic)',
+                                            'Magazines',
+                                            'Music CDs and Vinyl Records',
+                                            'Movies and TV Shows (DVDs, Blu-rays)'
+                                        ],
+                                        'Toys and Games': [
+                                            "Children's Toys",
+                                            'Board Games',
+                                            'Video Games and Consoles',
+                                            'Educational Toys'
+                                        ],
+                                        'Sports and Outdoors': [
+                                            'Sports Equipment',
+                                            'Outdoor Gear',
+                                            'Camping and Hiking Supplies',
+                                            'Fitness Accessories'
+                                        ],
+                                        'Automotive': [
+                                            'Car Accessories',
+                                            'Motorcycle Accessories',
+                                            'Automotive Tools and Equipment'
+                                        ],
+                                        'Groceries and Gourmet Food': [
+                                            'Fresh Produce',
+                                            'Packaged Foods',
+                                            'Beverages',
+                                            'Organic and Specialty Foods'
+                                        ],
+                                        'Pet Supplies': [
+                                            'Pet Food',
+                                            'Pet Accessories',
+                                            'Pet Health Products'
+                                        ],
+                                        'Office Supplies': [
+                                            'Office Furniture',
+                                            'Stationery',
+                                            'Printers and Scanners',
+                                            'Office Electronics'
+                                        ],
+                                        'Baby Products': [
+                                            'Baby Clothing',
+                                            'Baby Care Products',
+                                            'Baby Gear (Strollers, Car Seats)',
+                                            'Toys and Educational Products'
+                                        ],
+                                        'Handmade and Artisan Products': [
+                                            'Handmade Jewelry',
+                                            'Art and Craft Supplies',
+                                            'Custom-made Gifts'
+                                        ],
+                                        'Industrial and Scientific': [
+                                            'Lab Equipment',
+                                            'Industrial Tools',
+                                            'Safety Equipment'
+                                        ]
+                                    };
+
+                                    // Populate subcategories based on the selected category
+                                    if (selectedCategory && subcategories[selectedCategory]) {
+                                        subcategories[selectedCategory].forEach(subcategory => {
+                                            const option = document.createElement('option');
+                                            option.value = subcategory;
+                                            option.textContent = subcategory;
+                                            subCategorySelect.appendChild(option);
+                                        });
+                                    }
+                                }
+
+                                function populateSubsubcategories() {
+                                    const subCategorySelect = document.getElementById('subCategory');
+                                    const subSubCategorySelect = document.getElementById('subSubCategory');
+                                    const selectedSubCategory = subCategorySelect.value;
+
+                                    // Clear existing options
+                                    subSubCategorySelect.innerHTML = '<option value="">Select Subsubcategory</option>';
+
+                                    // Define subsubcategories based on selected subcategory
+                                    const subsubcategories = {
+                                        'Mobile Phones and Accessories': [
+                                            'Smartphones',
+                                            'Cases and Covers',
+                                            'Chargers and Cables',
+                                            'Screen Protectors',
+                                            'Power Banks',
+                                            'Bluetooth Headsets',
+                                            'Phone Holders and Mounts'
+                                        ],
+                                        'Laptops and Computers': [
+                                            'Laptops',
+                                            'Desktops',
+                                            'Monitors',
+                                            'Printers and Scanners',
+                                            'Computer Accessories (Keyboards, Mice, etc.)',
+                                            'External Hard Drives',
+                                            'Networking Devices (Routers, Modems)'
+                                        ],
+                                        'Cameras and Photography Equipment': [
+                                            'Digital Cameras',
+                                            'Camera Lenses',
+                                            'Tripods and Supports',
+                                            'Camera Bags and Cases',
+                                            'Memory Cards',
+                                            'Camera Batteries and Chargers'
+                                        ],
+                                        'Audio Devices (Headphones, Speakers)': [
+                                            'Headphones',
+                                            'Speakers',
+                                            'Earbuds and In-Ear Monitors',
+                                            'Bluetooth Speakers',
+                                            'Soundbars',
+                                            'MP3 Players'
+                                        ],
+                                        'Home Appliances (TVs, Refrigerators, Washing Machines)': [
+                                            'Televisions',
+                                            'Refrigerators',
+                                            'Washing Machines',
+                                            'Air Conditioners',
+                                            'Microwaves',
+                                            'Dishwashers'
+                                        ],
+                                        'Men\'s Clothing': [
+                                            'T-Shirts',
+                                            'Shirts',
+                                            'Jeans',
+                                            'Jackets',
+                                            'Suits',
+                                            'Underwear and Socks'
+                                        ],
+                                        'Women\'s Clothing': [
+                                            'Dresses',
+                                            'Tops and Blouses',
+                                            'Skirts',
+                                            'Pants and Leggings',
+                                            'Outerwear',
+                                            'Lingerie and Nightwear',
+                                            'Maternity Clothing',
+                                            'Ethnic Wear',
+                                            'Workwear'
+                                        ],
+                                        'Kids\' Clothing': [
+                                            'Baby Clothing',
+                                            'Boys\' Clothing',
+                                            'Girls\' Clothing',
+                                            'Kids\' Shoes',
+                                            'School Uniforms',
+                                            'Children\'s Sleepwear',
+                                            'Costumes',
+                                            'Seasonal Apparel',
+                                            'Swimwear'
+                                        ],
+                                        'Footwear': [
+                                            'Men\'s Shoes',
+                                            'Women\'s Shoes',
+                                            'Kids\' Shoes',
+                                            'Athletic Shoes',
+                                            'Boots',
+                                            'Sandals and Flip-Flops',
+                                            'Slippers',
+                                            'Shoe Care and Accessories',
+                                            'Specialty Footwear (Dance, Safety Shoes)'
+                                        ],
+                                        'Accessories (Bags, Jewelry, Watches)': [
+                                            'Handbags and Purses',
+                                            'Backpacks and Rucksacks',
+                                            'Wallets and Card Holders',
+                                            'Belts',
+                                            'Jewelry',
+                                            'Watches',
+                                            'Sunglasses',
+                                            'Scarves and Shawls',
+                                            'Hats and Caps'
+                                        ],
+                                        'Skincare Products': [
+                                            'Cleansers and Face Wash',
+                                            'Moisturizers',
+                                            'Toners and Mists',
+                                            'Serums and Treatments',
+                                            'Face Masks',
+                                            'Eye Care',
+                                            'Lip Care',
+                                            'Sunscreen and SPF Products',
+                                            'Acne Treatments'
+                                        ],
+                                        'Haircare Products': [
+                                            'Shampoos and Conditioners',
+                                            'Hair Styling Products',
+                                            'Hair Masks and Treatments',
+                                            'Hair Color and Dye',
+                                            'Scalp Treatments',
+                                            'Hair Oils and Serums',
+                                            'Hair Accessories',
+                                            'Hair Brushes and Combs',
+                                            'Hair Tools (Hair Dryers, Curling Irons)'
+                                        ],
+                                        'Makeup': [
+                                            'Face Makeup (Foundation, BB Cream)',
+                                            'Eye Makeup (Mascara, Eyeshadow)',
+                                            'Lip Makeup (Lipstick, Lip Gloss)',
+                                            'Makeup Brushes and Tools',
+                                            'Makeup Removers',
+                                            'Makeup Palettes and Sets',
+                                            'Makeup Accessories',
+                                            'False Eyelashes',
+                                            'Body and Face Painting'
+                                        ],
+                                        'Fragrances': [
+                                            'Perfumes',
+                                            'Colognes',
+                                            'Body Mists and Sprays',
+                                            'Deodorants and Antiperspirants',
+                                            'Fragrance Gift Sets',
+                                            'Fragrance Oils and Solid Perfumes',
+                                            'Home Fragrances (Candles, Diffusers)',
+                                            'Aromatherapy Products',
+                                            'Scented Bath Products'
+                                        ],
+                                        'Grooming Tools': [
+                                            'Electric Shavers and Trimmers',
+                                            'Manual Razors and Blades',
+                                            'Shaving Creams and Gels',
+                                            'Beard Care Products',
+                                            'Hair Removal Products',
+                                            'Nail Clippers and Files',
+                                            'Grooming Kits and Sets',
+                                            'Men\'s Grooming Accessories',
+                                            'Travel Grooming Essentials'
+                                        ],
+                                        'Furniture': [
+                                            'Living Room Furniture',
+                                            'Bedroom Furniture',
+                                            'Dining Room Furniture',
+                                            'Home Office Furniture',
+                                            'Outdoor Furniture',
+                                            'Kids\' Furniture',
+                                            'Storage and Organization',
+                                            'Furniture Sets',
+                                            'Furniture Accessories'
+                                        ],
+                                        'Home Decor': [
+                                            'Wall Art and Paintings',
+                                            'Clocks',
+                                            'Mirrors',
+                                            'Decorative Pillows and Cushions',
+                                            'Candles and Candle Holders',
+                                            'Rugs and Carpets',
+                                            'Window Treatments',
+                                            'Artificial Plants and Flowers',
+                                            'Seasonal Decorations'
+                                        ],
+                                        'Kitchen Appliances': [
+                                            'Cooking Ranges and Stoves',
+                                            'Refrigerators and Freezers',
+                                            'Dishwashers',
+                                            'Microwaves',
+                                            'Blenders and Food Processors',
+                                            'Coffee Makers and Espresso Machines',
+                                            'Toasters and Sandwich Makers',
+                                            'Electric Kettles and Tea Makers',
+                                            'Kitchen Scales and Measuring Tools'
+                                        ],
+                                        'Cookware and Tableware': [
+                                            'Pots and Pans',
+                                            'Cooking Utensils',
+                                            'Cutlery and Knife Sets',
+                                            'Dinnerware Sets',
+                                            'Drinkware (Glasses, Mugs)',
+                                            'Serveware (Plates, Bowls)',
+                                            'Flatware and Silverware',
+                                            'Table Linens and Placemats',
+                                            'Kitchen Storage and Organization'
+                                        ],
+                                        'Bedding and Bath': [
+                                            'Bedding Sets',
+                                            'Sheets and Pillowcases',
+                                            'Blankets and Throws',
+                                            'Comforters and Duvets',
+                                            'Mattress Toppers and Protectors',
+                                            'Pillows',
+                                            'Bath Towels and Washcloths',
+                                            'Shower Curtains and Hooks',
+                                            'Bathroom Storage and Organization'
+                                        ],
+                                        'Supplements': [
+                                            'Vitamins and Minerals',
+                                            'Protein Supplements',
+                                            'Herbal Supplements',
+                                            'Weight Management Supplements',
+                                            'Sports Nutrition',
+                                            'Digestive Health Supplements',
+                                            'Immune Support Supplements',
+                                            'Energy Supplements',
+                                            'Multivitamins and Daily Supplements'
+                                        ],
+                                        'Fitness Equipment': [
+                                            'Exercise Machines (Treadmills, Ellipticals)',
+                                            'Free Weights and Dumbbells',
+                                            'Yoga and Pilates Equipment',
+                                            'Resistance Bands',
+                                            'Exercise Balls and Accessories',
+                                            'Fitness Trackers and Smartwatches',
+                                            'Exercise Mats and Flooring',
+                                            'Gym Bags and Accessories',
+                                            'Recovery and Mobility Tools'
+                                        ],
+                                        'Medical Supplies': [
+                                            'First Aid Kits',
+                                            'Braces and Supports',
+                                            'Mobility Aids (Walkers, Wheelchairs)',
+                                            'Health Monitors (Blood Pressure, Glucose)',
+                                            'Orthopedic Supplies',
+                                            'Home Health Care Equipment',
+                                            'Incontinence and Ostomy Supplies',
+                                            'Medical Gloves and Masks',
+                                            'Medical Books and References'
+                                        ],
+                                        'Personal Care Products': [
+                                            'Dental Care (Toothbrushes, Toothpaste)',
+                                            'Body Wash and Shower Gels',
+                                            'Hand Soaps and Sanitizers',
+                                            'Feminine Hygiene Products',
+                                            'Deodorants and Antiperspirants',
+                                            'Foot Care Products',
+                                            'Intimate Care Products',
+                                            'Sun Care Products',
+                                            'Adult Incontinence Products'
+                                        ],
+                                        'Books (Fiction, Non-Fiction, Academic)': [
+                                            'Literature and Fiction',
+                                            'Biographies and Memoirs',
+                                            'Self-Help and Personal Development',
+                                            'History Books',
+                                            'Science and Nature',
+                                            'Textbooks and Study Guides',
+                                            'Art and Photography Books',
+                                            'Cookbooks and Food Writing',
+                                            'Children\'s Books'
+                                        ],
+                                        'Magazines': [
+                                            'Fashion Magazines',
+                                            'Lifestyle Magazines',
+                                            'News and Current Affairs',
+                                            'Health and Fitness Magazines',
+                                            'Technology Magazines',
+                                            'Travel Magazines',
+                                            'Home and Garden Magazines',
+                                            'Sports Magazines',
+                                            'Specialty Magazines'
+                                        ],
+                                        'Music CDs and Vinyl Records': [
+                                            'Pop Music',
+                                            'Rock Music',
+                                            'Classical Music',
+                                            'Jazz and Blues',
+                                            'Country Music',
+                                            'Electronic and Dance Music',
+                                            'World Music',
+                                            'Soundtracks and Musical Theater',
+                                            'Children\'s Music'
+                                        ],
+                                        'Movies and TV Shows (DVDs, Blu-rays)': [
+                                            'Action and Adventure',
+                                            'Comedy Movies',
+                                            'Drama Movies',
+                                            'Science Fiction and Fantasy',
+                                            'Documentary Films',
+                                            'Anime and Animation',
+                                            'TV Series',
+                                            'Musicals and Performing Arts',
+                                            'Special Interest Movies'
+                                        ],
+                                        'Children\'s Toys': [
+                                            'Action Figures',
+                                            'Dolls and Dollhouses',
+                                            'Building Toys (LEGO, Blocks)',
+                                            'Educational Toys',
+                                            'Outdoor Play Equipment',
+                                            'Puzzles and Brain Teasers',
+                                            'Remote Control Toys',
+                                            'Board Games',
+                                            'Toy Vehicles'
+                                        ],
+                                        'Board Games': [
+                                            'Strategy Games',
+                                            'Family Games',
+                                            'Party Games',
+                                            'Educational Games',
+                                            'Card Games',
+                                            'Cooperative Games',
+                                            'Role-Playing Games',
+                                            'Classic Games',
+                                            'Dice Games'
+                                        ],
+                                        'Video Games and Consoles': [
+                                            'PlayStation Consoles and Games',
+                                            'Xbox Consoles and Games',
+                                            'Nintendo Consoles and Games',
+                                            'PC Games',
+                                            'Virtual Reality (VR) Headsets',
+                                            'Gaming Accessories',
+                                            'Gaming Merchandise',
+                                            'Digital Game Codes',
+                                            'Gaming Chairs and Furniture'
+                                        ],
+                                        'Educational Toys': [
+                                            'STEM Toys',
+                                            'Language Learning Toys',
+                                            'Math and Counting Toys',
+                                            'Science Kits and Experiments',
+                                            'Geography and History Toys',
+                                            'Musical Instruments for Kids',
+                                            'Art and Craft Kits',
+                                            'Educational Books and Games',
+                                            'Interactive Learning Systems'
+                                        ],
+                                        'Sports Equipment': [
+                                            'Football and Soccer',
+                                            'Basketball',
+                                            'Tennis and Racquet Sports',
+                                            'Golf Equipment',
+                                            'Fitness and Exercise',
+                                            'Cycling',
+                                            'Swimming Gear',
+                                            'Winter Sports',
+                                            'Water Sports'
+                                        ],
+                                        'Outdoor Gear': [
+                                            'Camping Gear',
+                                            'Hiking Gear',
+                                            'Backpacks and Bags',
+                                            'Tents and Shelters',
+                                            'Sleeping Bags and Pads',
+                                            'Outdoor Clothing',
+                                            'Outdoor Cooking Equipment',
+                                            'Navigation and Survival Gear',
+                                            'Fishing Gear'
+                                        ],
+                                        'Camping and Hiking Supplies': [
+                                            'Tents and Shelters',
+                                            'Sleeping Bags and Pads',
+                                            'Camp Furniture',
+                                            'Camp Cooking Equipment',
+                                            'Coolers and Ice Chests',
+                                            'Hiking Backpacks',
+                                            'Hydration Packs',
+                                            'Navigation Tools (GPS, Compass)',
+                                            'Emergency and Safety Gear'
+                                        ],
+                                        'Fitness Accessories': [
+                                            'Yoga and Pilates Accessories',
+                                            'Resistance Bands',
+                                            'Exercise Mats and Flooring',
+                                            'Fitness Trackers and Smartwatches',
+                                            'Gym Bags and Totes',
+                                            'Water Bottles and Hydration Packs',
+                                            'Workout Gloves and Belts',
+                                            'Foam Rollers and Massage Tools',
+                                            'Exercise Balls and Balance Boards'
+                                        ],
+                                        'Car Accessories': [
+                                            'Car Covers',
+                                            'Car Mats and Carpets',
+                                            'Car Seat Covers',
+                                            'Steering Wheel Covers',
+                                            'Sunshades',
+                                            'Car Organizers',
+                                            'Interior Accessories',
+                                            'Exterior Accessories',
+                                            'Performance Parts and Accessories'
+                                        ],
+                                        'Motorcycle Accessories': [
+                                            'Helmets',
+                                            'Jackets and Riding Gear',
+                                            'Gloves and Boots',
+                                            'Motorcycle Parts',
+                                            'Luggage and Bags',
+                                            'Security and Covers',
+                                            'Exhaust and Body Parts',
+                                            'Lights and Indicators',
+                                            'Maintenance and Repair Tools'
+                                        ],
+                                        'Automotive Tools and Equipment': [
+                                            'Diagnostic and Test Tools',
+                                            'Battery Chargers and Jump Starters',
+                                            'Tire and Wheel Tools',
+                                            'Engine and Transmission Tools',
+                                            'Fluids and Maintenance',
+                                            'Shop Equipment and Supplies',
+                                            'Paint and Body Repair Tools',
+                                            'Workshop Storage Solutions',
+                                            'Garage and Mechanic Tools'
+                                        ],
+                                        'Fresh Produce': [
+                                            'Fruits',
+                                            'Vegetables',
+                                            'Herbs and Spices',
+                                            'Organic Produce',
+                                            'Exotic Fruits and Vegetables',
+                                            'Salad Greens',
+                                            'Root Vegetables',
+                                            'Berries and Melons',
+                                            'Pre-cut and Packaged Produce'
+                                        ],
+                                        'Packaged Foods': [
+                                            'Breakfast Foods',
+                                            'Snack Foods',
+                                            'Canned Goods',
+                                            'Pasta and Noodles',
+                                            'Rice and Grains',
+                                            'Soups and Broths',
+                                            'Baking Ingredients',
+                                            'Condiments and Sauces',
+                                            'Dried Fruits and Nuts'
+                                        ],
+                                        'Beverages': [
+                                            'Coffee',
+                                            'Tea',
+                                            'Juices and Fruit Drinks',
+                                            'Sports and Energy Drinks',
+                                            'Soda and Soft Drinks',
+                                            'Water',
+                                            'Alcoholic Beverages',
+                                            'Mixers and Syrups',
+                                            'Powdered Drink Mixes'
+                                        ],
+                                        'Organic and Specialty Foods': [
+                                            'Organic Snacks',
+                                            'Gluten-Free Foods',
+                                            'Vegan and Vegetarian Foods',
+                                            'Kosher Foods',
+                                            'Ethnic Foods',
+                                            'Gourmet and Artisanal Foods',
+                                            'Specialty Diet Foods',
+                                            'Superfoods and Health Foods',
+                                            'Fair Trade Products'
+                                        ],
+                                        'Pet Food': [
+                                            'Dry Dog Food',
+                                            'Wet Dog Food',
+                                            'Dog Treats',
+                                            'Dry Cat Food',
+                                            'Wet Cat Food',
+                                            'Cat Treats',
+                                            'Small Animal Food (Rabbits, Hamsters)',
+                                            'Bird Food',
+                                            'Fish Food'
+                                        ],
+                                        'Pet Accessories': [
+                                            'Pet Beds',
+                                            'Pet Toys',
+                                            'Pet Carriers and Crates',
+                                            'Pet Collars and Leashes',
+                                            'Bowls and Feeding Accessories',
+                                            'Grooming Supplies',
+                                            'Training and Behavior Aids',
+                                            'Health and Wellness Products',
+                                            'Pet Apparel'
+                                        ],
+                                        'Pet Health Products': [
+                                            'Flea and Tick Treatments',
+                                            'Dental Care Products',
+                                            'Supplements and Vitamins',
+                                            'Veterinary Diets',
+                                            'First Aid Supplies',
+                                            'Pet Medications',
+                                            'Pet Medical Tests',
+                                            'Ear and Eye Care',
+                                            'Pet Health Books'
+                                        ],
+                                        'Office Furniture': [
+                                            'Desks',
+                                            'Office Chairs',
+                                            'File Cabinets',
+                                            'Bookcases',
+                                            'Conference Tables',
+                                            'Reception Furniture',
+                                            'Office Partitions',
+                                            'Office Carts and Stands',
+                                            'Office Furniture Sets'
+                                        ],
+                                        'Stationery': [
+                                            'Pens and Pencils',
+                                            'Notebooks and Journals',
+                                            'Folders and Binders',
+                                            'Desk Accessories',
+                                            'Calendars and Planners',
+                                            'Stamps and Ink Pads',
+                                            'Art Supplies',
+                                            'Wrapping and Packaging Supplies',
+                                            'Educational Supplies'
+                                        ],
+                                        'Printers and Scanners': [
+                                            'Inkjet Printers',
+                                            'Laser Printers',
+                                            'All-in-One Printers',
+                                            'Photo Printers',
+                                            'Document Scanners',
+                                            '3D Printers and Supplies',
+                                            'Printer Ink and Toner',
+                                            'Printer Paper and Labels',
+                                            'Printer Accessories'
+                                        ],
+                                        'Office Electronics': [
+                                            'Calculators',
+                                            'Shredders',
+                                            'Label Makers',
+                                            'Projectors',
+                                            'Scanners',
+                                            'Laminators',
+                                            'Point-of-Sale (POS) Systems',
+                                            'Digital Voice Recorders',
+                                            'Dictation Machines'
+                                        ],
+                                        'Baby Clothing': [
+                                            'Newborn Clothing',
+                                            'Baby Onesies and Bodysuits',
+                                            'Baby Sleepwear',
+                                            'Baby Outerwear',
+                                            'Baby Shoes and Socks',
+                                            'Baby Swimwear',
+                                            'Baby Costumes',
+                                            'Organic Baby Clothing',
+                                            'Preemie Clothing'
+                                        ],
+                                        'Baby Care Products': [
+                                            'Diapers and Wipes',
+                                            'Baby Bathing',
+                                            'Baby Skin Care',
+                                            'Baby Hair Care',
+                                            'Baby Oral Care',
+                                            'Baby Safety Products',
+                                            'Nursery Furniture and Decor',
+                                            'Baby Feeding Supplies',
+                                            'Potty Training Products'
+                                        ],
+                                        'Baby Gear (Strollers, Car Seats)': [
+                                            'Baby Strollers',
+                                            'Baby Car Seats',
+                                            'Baby Carriers and Slings',
+                                            'Baby Travel Accessories',
+                                            'Baby Backpacks and Bags',
+                                            'Baby Monitors',
+                                            'Baby Swings and Bouncers',
+                                            'Baby High Chairs',
+                                            'Playards and Playpens'
+                                        ],
+                                        'Toys and Educational Products': [
+                                            'Educational Toys',
+                                            'Pretend Play Toys',
+                                            'Building Toys (LEGO, Blocks)',
+                                            'Outdoor Play Equipment',
+                                            'Board Games and Puzzles',
+                                            'Dolls and Action Figures',
+                                            'Art and Craft Kits',
+                                            'Musical Toys',
+                                            'Science and Discovery Toys'
+                                        ],
+                                        'Handmade Jewelry': [
+                                            'Necklaces and Pendants',
+                                            'Earrings',
+                                            'Bracelets and Bangles',
+                                            'Rings',
+                                            'Brooches and Pins',
+                                            'Anklets',
+                                            'Jewelry Sets',
+                                            'Personalized Jewelry',
+                                            'Birthstone Jewelry'
+                                        ],
+                                        'Art and Craft Supplies': [
+                                            'Drawing and Painting Supplies',
+                                            'Sculpting and Modeling Supplies',
+                                            'Craft Kits',
+                                            'Fabric and Sewing Supplies',
+                                            'Knitting and Crochet Supplies',
+                                            'Beading and Jewelry Making',
+                                            'Paper and Paper Crafts',
+                                            'Art Brushes and Tools',
+                                            'Artist Easels and Storage'
+                                        ],
+                                        'Custom-made Gifts': [
+                                            'Personalized Photo Gifts',
+                                            'Custom Clothing and Accessories',
+                                            'Custom Home Decor',
+                                            'Engraved Gifts',
+                                            'Custom Art and Prints',
+                                            'Handcrafted Furniture',
+                                            'Custom Jewelry',
+                                            'Personalized Stationery',
+                                            'Bespoke Gifts for Special Occasions'
+                                        ],
+                                        'Lab Equipment': [
+                                            'Microscopes',
+                                            'Centrifuges',
+                                            'Laboratory Balances',
+                                            'Lab Heating and Cooling Equipment',
+                                            'Lab Mixers and Stirrers',
+                                            'Lab Pipettes and Dispensers',
+                                            'Lab Consumables and Supplies',
+                                            'Lab Safety Equipment',
+                                            'Lab Furniture and Storage'
+                                        ],
+                                        'Industrial Tools': [
+                                            'Power Tools',
+                                            'Hand Tools',
+                                            'Measuring and Layout Tools',
+                                            'Cutting Tools',
+                                            'Abrasives and Surface Conditioning',
+                                            'Fasteners and Hardware',
+                                            'Welding and Soldering Equipment',
+                                            'Material Handling Equipment',
+                                            'Tool Storage and Organization'
+                                        ],
+                                        'Safety Equipment': [
+                                            'Protective Clothing',
+                                            'Safety Gloves and Hand Protection',
+                                            'Eye and Face Protection',
+                                            'Hearing Protection',
+                                            'Respiratory Protection',
+                                            'Fall Protection',
+                                            'Emergency Response Equipment',
+                                            'Fire Protection Equipment',
+                                            'Safety Signs and Labels'
+                                        ]
+
+                                    };
+
+                                    // Populate subsubcategories based on the selected subcategory
+                                    if (selectedSubCategory && subsubcategories[selectedSubCategory]) {
+                                        subsubcategories[selectedSubCategory].forEach(subsubcategory => {
+                                            const option = document.createElement('option');
+                                            option.value = subsubcategory;
+                                            option.textContent = subsubcategory;
+                                            subSubCategorySelect.appendChild(option);
+                                        });
+                                    }
+                                }
+                            </script>
+
+                            <div class="form-control">
+                                <label for="colour">Colour</label>
+                                <input class="<%= validationErrors.find(e => e.param === 'colour') ? 'invalid' : '' %>"
+                                    type="text" placeholder="Colour" name="colour" id="colour"
+                                    value="<% if (editing || hasError) { %><%= product.colour %><% } %>">
+                            </div>
+
+                            <div class="form-control">
+                                <label for="quantity">Quantity</label>
+                                <input
+                                    class="<%= validationErrors.find(e => e.param === 'quantity') ? 'invalid' : '' %>"
+                                    type="number" placeholder="Quantity" name="quantity" id="quantity"
+                                    value="<% if (editing || hasError) { %><%= product.quantity %><% } %>">
+                            </div>
+
+                            <div class="form-control">
+                                <label for="description">Description</label>
+                                <textarea
+                                    class="<%= validationErrors.find(e => e.param === 'description') ? 'invalid' : '' %>"
+                                    name="description" placeholder="Description" id="description"
+                                    rows="5"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
+                            </div>
+
+                            <% if (editing) { %>
+                                <input type="hidden" value="<%= product._id %>" name="productId">
+                                <% } %>
+
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <button class="btn" type="submit">
+                                        <% if (editing) { %>Update Product<% } else { %>Add Product<% } %>
+                                    </button>
+                        </form>
+            </main>
+            <%- include('../includes/end.ejs') %>

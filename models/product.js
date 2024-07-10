@@ -112,6 +112,10 @@ const productSchema = new Schema(
         "Safety Equipment",
       ],
     },
+    subSubCategory: {
+      type: String,
+      required: true
+    },
     colour: {
       type: String,
       required: true,

@@ -24,6 +24,7 @@ exports.postAddProduct = (req, res, next) => {
   const colour = req.body.colour;
   const category = req.body.category;
   const subCategory = req.body.subCategory;
+  const subSubCategory = req.body.subSubCategory;
   const quantity = req.body.quantity;
   const description = req.body.description;
   if (!image) {
@@ -56,6 +57,7 @@ exports.postAddProduct = (req, res, next) => {
         price: price,
         category: category,
         subCategory: subCategory,
+        subSubCategory: subSubCategory,
         colour: colour,
         quantity: quantity,
         description: description,
@@ -74,6 +76,7 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl: imageUrl,
     category: category,
     subCategory: subCategory,
+    subSubCategory: subSubCategory,
     colour: colour,
     quantity: quantity,
     userId: req.user,
@@ -127,6 +130,7 @@ exports.postEditProduct = (req, res, next) => {
   const updatedQuantity = req.body.quantity;
   const updatedCategory = req.body.category;
   const updatedSubCategory = req.body.subCategory;
+  const updatedsubSubCategory = req.body.subSubCategory;
   const image = req.file;
   const updatedDesc = req.body.description;
 
@@ -146,6 +150,7 @@ exports.postEditProduct = (req, res, next) => {
         quantity: updatedQuantity,
         category: updatedCategory,
         subCategory: updatedSubCategory,
+        subSubCategory: updatedsubSubCategory,
         _id: prodId,
       },
       errorMessage: errors.array()[0].msg,
@@ -175,6 +180,7 @@ exports.postEditProduct = (req, res, next) => {
       product.quantity = updatedQuantity;
       product.category = updatedCategory;
       product.subCategory = updatedSubCategory;
+      product.subSubCategory = updatedsubSubCategory;
 
       if (image) {
         console.log("New Image Uploaded:", image.path);
@@ -310,7 +316,7 @@ exports.getAccount = (req, res, next) => {
       res.render("admin/account", {
         email: userData.email,
         orders: orders,
-        pageTitle: "Admin Account",
+        pageTitle: "Account",
         path: "/admin/account",
       });
     });

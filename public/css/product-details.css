@@ -5,7 +5,8 @@ main.centered {
     padding: 20px;
     background-color: #ffffff;
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-    text-align: left; /* Change text-align to left */
+    text-align: left;
+    /* Change text-align to left */
     font-family: Arial, sans-serif;
 }
 
@@ -18,14 +19,23 @@ main.centered {
     justify-content: space-between;
 }
 
+h1,
+h3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* Image section */
 .product-details .image {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 40%; /* Adjust width as needed */
-    margin-right: 20px; /* Add some margin */
+    max-width: 40%;
+    /* Adjust width as needed */
+    margin-right: 20px;
+    /* Add some margin */
 }
 
 .product-details .image img {
@@ -36,7 +46,8 @@ main.centered {
 /* Details section */
 .product-details .details {
     flex: 2;
-    max-width: 55%; /* Adjust width as needed */
+    max-width: 55%;
+    /* Adjust width as needed */
 }
 
 .product-details .details h2 {
@@ -104,10 +115,21 @@ main.centered {
     height: 100px;
     margin-bottom: 10px;
 }
-
-.comment-form button {
-    padding: 10px 20px;
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Example: Full viewport height */
+    margin: 0; /* Remove default margin */
+    background-color: #f0f0f0; /* Background color for example */
 }
+
+.button-container button {
+    padding: 10px 20px;
+    text-align: center;
+    margin-top: 20px; /* Adjust as needed */
+}
+
 
 .comments {
     margin-top: 20px;
