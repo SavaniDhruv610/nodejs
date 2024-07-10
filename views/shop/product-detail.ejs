@@ -3,9 +3,9 @@
 </head>
 
 <body>
-    <%- include('../includes/navigation.ejs') %>
+    <% include('../includes/navigation.ejs', { csrfToken: csrfToken, path: path }) %>
     <main class="centered">
-        <h1><%= product.title %></h1>
+        <h1><%= pageTitle %></h1>
         <hr>
         <div class="product-details">
             <div class="image">
@@ -18,11 +18,85 @@
                 <p>Category: <%= product.category %></p>
                 <p>Description: <%= product.description %></p>
                 <% if (isAuthenticated) { %>
-                    <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                    <% include('../includes/add-to-cart.ejs', { product: product }) %>
                 <% } %>
             </div>
         </div>
+
+        <!-- Comment Form -->
+        <% if (isAuthenticated) { %>
+            <div class="comment-form">
+                <h3>Leave a Comment</h3>
+                <form id="commentForm" action="/products/comment/<%= product._id %>" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <textarea name="comment" required></textarea>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        <% } else { %>
+            <p><a href="/login">Login</a> to leave a comment</p>
+        <% } %>
+
+        <!-- Display Comments -->
+        <div class="comments">
+            <h3>Comments</h3>
+            <div id="commentsContainer">
+                <% product.comments.forEach(comment => { %>
+                    <div class="comment">
+                        <p><strong><%= comment.email %></strong> <%= new Date(comment.created).toLocaleString() %></p>
+                        <p><%= comment.text %></p>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
     </main>
-    <%- include('../includes/end.ejs') %>
+
+    <% include('../includes/end.ejs') %>
+
+    <script>
+        document.getElementById('commentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+        
+            const form = event.target;
+            const formData = new FormData(form);
+            const commentText = formData.get('comment');
+            const csrfToken = formData.get('_csrf');
+        
+            fetch(form.action, {
+                method: 'PUT', // or 'POST' depending on your server-side route
+                headers: {
+                    'Content-Type': 'application/json',
+                    'csrf-token': csrfToken
+                },
+                body: JSON.stringify({ comment: commentText })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.comment) {
+                    const comment = data.comment;
+                    const commentsContainer = document.getElementById('commentsContainer');
+                    const newComment = document.createElement('div');
+                    newComment.className = 'comment';
+                    newComment.innerHTML = `
+                        <p><strong>${comment.email}</strong> ${new Date(comment.created).toLocaleString()}</p>
+                        <p>${comment.text}</p>
+                    `;
+                    commentsContainer.appendChild(newComment);
+                    form.reset();
+                } else {
+                    alert('Error adding comment. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding comment:', error);
+                alert('Error adding comment. Please try again.');
+            });
+        });
+    </script>
 </body>
 </html>

@@ -31,6 +31,8 @@ router.put('/products/like/:productId', isAuth, shopController.like); // Route f
 
 router.put('/products/unlike/:productId', isAuth, shopController.unlike);
 
+router.put('/products/comment/:productId',isAuth,shopController.postComments )
+
 // router.post("/create-order", isAuth, shopController.postOrder);
 
 router.get("/orders", isAuth, shopController.getOrders);

@@ -6,6 +6,7 @@ const stripe = require("stripe")(
 const PDFDocument = require("pdfkit");
 const Product = require("../models/product");
 const Order = require("../models/order");
+const mongoose = require('mongoose');
 const ITEMS_PER_PAGE = 10;
 
 exports.getProducts = (req, res, next) => {
@@ -39,10 +40,36 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
+// exports.getProduct = (req, res, next) => {
+//   const prodId = req.params.productId;
+//   Product.findById(prodId)
+//     .then((product) => {
+//       res.render("shop/product-detail", {
+//         product: product,
+//         pageTitle: product.title,
+//         path: "/products",
+//       });
+//     })
+//     .catch((err) => {
+//       const error = new Error(err);
+//       error.httpStatusCode = 500;
+//       return next(error);
+//     });
+// };
+
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
+  
+  // Find the product by its ID
   Product.findById(prodId)
     .then((product) => {
+      if (!product) {
+        const error = new Error('Product not found');
+        error.httpStatusCode = 404;
+        return next(error);
+      }
+      
+      // Render the product-detail view with the found product
       res.render("shop/product-detail", {
         product: product,
         pageTitle: product.title,
@@ -50,11 +77,13 @@ exports.getProduct = (req, res, next) => {
       });
     })
     .catch((err) => {
+      // Handle any errors that occur during product retrieval
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
 };
+
 
 exports.getIndex = (req, res, next) => {
   const page = +req.query.page || 1; // Parse the page number from query parameters or default to 1
@@ -411,6 +440,8 @@ exports.like = (req, res, next) => {
       res.status(500).json({ message: "Internal server error" });
     });
 };
+
+
 exports.unlike = (req, res, next) => {
   const productId = req.params.productId;
   const userId = req.user._id; // Assuming you have user ID in req.user
@@ -431,5 +462,119 @@ exports.unlike = (req, res, next) => {
     .catch((err) => {
       console.error("Error unliking product:", err);
       res.status(500).json({ message: "Internal server error" });
+    });
+};
+
+
+// exports.postComments = (req, res) => {
+//   const commentText = req.body.comment;
+//   const userId = req.user._id;
+//   const productId = req.params.productId;
+
+//   const comment = {
+//     text: commentText,
+//     postedBy: userId, // Assuming userId references the user document
+//     created: new Date()
+//   };
+
+//   Product.findByIdAndUpdate(
+//     productId,
+//     { $push: { comments: comment } },
+//     { new: true }
+//   )
+//     .populate('comments.postedBy', 'email') // Populate the user's email
+//     .then((updatedProduct) => {
+//       if (!updatedProduct) {
+//         return res.status(404).json({ message: "Product not found" });
+//       }
+//       const newComment = updatedProduct.comments[updatedProduct.comments.length - 1];
+//       res.status(200).json({ comment: newComment });
+//     })
+//     .catch((err) => {
+//       console.error("Error adding comment:", err);
+//       res.status(500).json({ message: "Internal server error" });
+//     });
+// };
+
+
+// exports.postComments = (req, res) => {
+//   const commentText = req.body.comment;
+//   const userId = req.user._id; // Assuming userId references the user document
+//   const productId = req.params.productId;
+//   const email = req.user.email;
+
+//   const comment = {
+//     text: commentText,
+//     postedBy: userId, // Use userId instead of user email
+//     created: new Date(),
+//     email:email
+//   };
+
+//   // Update the product with the new comment
+//   Product.findByIdAndUpdate(
+//     productId,
+//     { $push: { comments: comment } },
+//     { new: true }
+//   )
+//     .populate('comments.postedBy', 'email') // Populate the user's email in the comments array
+//     .then((updatedProduct) => {
+//       if (!updatedProduct) {
+//         return res.status(404).json({ message: "Product not found" });
+//       }
+      
+//       // Find the newly added comment by matching the text and userId
+//       const newComment = updatedProduct.comments.find(c => c.text === comment.text && c.postedBy.equals(comment.postedBy));
+      
+//       if (!newComment) {
+//         return res.status(500).json({ message: "Error finding newly added comment" });
+//       }
+
+//       res.status(200).json({ comment: newComment });
+//     })
+//     .catch((err) => {
+//       console.error("Error adding comment:", err);
+//       res.status(500).json({ message: "Internal server error" });
+//     });
+// };
+
+
+
+exports.postComments = (req, res) => {
+  const commentText = req.body.comment;
+  const userId = req.user._id; // Assuming userId references the user document
+  const productId = req.params.productId;
+  const email = req.user.email;
+
+  const comment = {
+    text: commentText,
+    postedBy: userId,
+    created: new Date(),
+    email: email, // Assign the email field
+  };
+
+  // Update the product with the new comment
+  Product.findByIdAndUpdate(
+    productId,
+    { $push: { comments: comment } }, // Push the entire comment object to the product's comments array
+    { new: true }
+  )
+    .populate('comments.postedBy', 'email') // Populate the user's email in the comments array
+    .then(updatedProduct => {
+      if (!updatedProduct) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+
+      // Find the newly added comment by matching the text and userId
+      const newComment = updatedProduct.comments.find(c => c.text === commentText && c.postedBy.equals(userId));
+
+      if (!newComment) {
+        return res.status(500).json({ message: 'Error finding newly added comment' });
+      }
+
+      res.status(200).json({ comment: newComment });
+    })
+    .catch(err => {
+      console.error('Error adding comment:', err);
+      res.status(500).json({ message: 'Internal server error' });
     });
 };

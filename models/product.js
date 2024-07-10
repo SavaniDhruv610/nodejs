@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { text } = require("pdfkit");
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema(
@@ -130,6 +131,20 @@ const productSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "User",
+      },
+    ],
+    comments: [
+      {
+        text: String,
+        created: {
+          type: Date,
+          default: Date.now,
+        },
+        postedBy: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        email: { type:String, ref: "User" },
       },
     ],
     isDeleted: {

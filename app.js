@@ -8,6 +8,9 @@ const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
 
+
+
+
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
@@ -43,6 +46,7 @@ const fileFilter = (req, file, cb) => {
 
 app.set("view engine", "ejs");
 app.set("views", "views");
+app.use(express.json()); // read the comment from form
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
