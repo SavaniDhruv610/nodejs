@@ -7,8 +7,9 @@
     <main>
         <h1>Account Information</h1>
         <h3>Email: <%= email %></h3>
+        <h3>User Name: <%= name %></h3>
         <% if (orders.length <= 0) { %>
-            <h1>Nothing there!</h1>
+            <h1>NO Order Placed!</h1>
         <% } else { %>
             <ul class="orders">
                 <h2>Your Order</h2>
@@ -37,14 +38,7 @@
                 <% }); %>
             </ul>
         <% } %>
-        <div>
-            <input type="checkbox" class="checkbox" id="checkbox" />
-            <label for="checkbox" class="checkbox-label">
-              <i class="fas fa-moon"></i>
-              <i class="fas fa-sun"></i>
-              <span class="ball"></span>
-            </label>
-          </div>
+        
     </main>
     <%- include('../includes/end.ejs') %>
 </body>

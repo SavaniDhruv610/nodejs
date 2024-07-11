@@ -33,37 +33,28 @@
                             </div>
                             <div class="form-control">
                                 <label for="category">Category</label>
-                                <select
-                                    class="<%= validationErrors.find(e => e.param === 'category') ? 'invalid' : '' %>"
-                                    name="category" id="category" onchange="populateSubcategories()">
-                                    <option value="" <% if (!product.category) { %>selected<% } %>>Select Category</option>
-                                    <option value="Electronics" <% if (product.category === 'Electronics') { %>selected<% } %>>Electronics</option>
-                                    <option value="Fashion and Apparel" <% if (product.category === 'Fashion and Apparel') { %>selected<% } %>>Fashion and Apparel</option>
-                                    <option value="Beauty and Personal Care" <% if (product.category === 'Beauty and Personal Care') { %>selected<% } %>>Beauty and Personal Care</option>
-                                    <option value="Home and Kitchen" <% if (product.category === 'Home and Kitchen') { %>selected<% } %>>Home and Kitchen</option>
-                                    <option value="Health and Wellness" <% if (product.category === 'Health and Wellness') { %>selected<% } %>>Health and Wellness</option>
-                                    <option value="Books and Media" <% if (product.category === 'Books and Media') { %>selected<% } %>>Books and Media</option>
-                                    <option value="Toys and Games" <% if (product.category === 'Toys and Games') { %>selected<% } %>>Toys and Games</option>
-                                    <option value="Sports and Outdoors" <% if (product.category === 'Sports and Outdoors') { %>selected<% } %>>Sports and Outdoors</option>
-                                    <option value="Automotive" <% if (product.category === 'Automotive') { %>selected<% } %>>Automotive</option>
-                                    <option value="Groceries and Gourmet Food" <% if (product.category === 'Groceries and Gourmet Food') { %>selected<% } %>>Groceries and Gourmet Food</option>
-                                    <option value="Pet Supplies" <% if (product.category === 'Pet Supplies') { %>selected<% } %>>Pet Supplies</option>
-                                    <option value="Office Supplies" <% if (product.category === 'Office Supplies') { %>selected<% } %>>Office Supplies</option>
-                                    <option value="Baby Products" <% if (product.category === 'Baby Products') { %>selected<% } %>>Baby Products</option>
-                                    <option value="Handmade and Artisan Products" <% if (product.category === 'Handmade and Artisan Products') { %>selected<% } %>>Handmade and Artisan Products</option>
-                                    <option value="Industrial and Scientific" <% if (product.category === 'Industrial and Scientific') { %>selected<% } %>>Industrial and Scientific</option>
+                                <select class="<%= validationErrors.find(e => e.param === 'category') ? 'invalid' : '' %>"
+                                        name="category" id="category" onchange="populateSubcategories()">
+                                    <option value="">Select Category</option>
+                                    <% const categories = [
+                                        'Electronics', 'Fashion and Apparel', 'Beauty and Personal Care',
+                                        'Home and Kitchen', 'Health and Wellness', 'Books and Media',
+                                        'Toys and Games', 'Sports and Outdoors', 'Automotive',
+                                        'Groceries and Gourmet Food', 'Pet Supplies', 'Office Supplies',
+                                        'Baby Products', 'Handmade and Artisan Products', 'Industrial and Scientific'
+                                    ]; %>
+                                    <% categories.forEach(cat => { %>
+                                        <option value="<%= cat %>" <%= editing && product.category === cat ? 'selected' : '' %>><%= cat %></option>
+                                    <% }); %>
                                 </select>
                             </div>
-
+                            
                             <div class="form-control">
                                 <label for="subCategory">Subcategory</label>
                                 <select class="<%= validationErrors.find(e => e.param === 'subCategory') ? 'invalid' : '' %>"
                                         name="subCategory" id="subCategory" onchange="populateSubsubcategories()">
                                     <option value="">Select Subcategory</option>
                                     <!-- Options will be dynamically populated based on the selected category -->
-                                    <% if (product.subCategory) { %>
-                                        <option value="<%= product.subCategory %>" selected><%= product.subCategory %></option>
-                                    <% } %>
                                 </select>
                             </div>
                             
@@ -73,12 +64,10 @@
                                         name="subSubCategory" id="subSubCategory">
                                     <option value="">Select Subsubcategory</option>
                                     <!-- Options will be dynamically populated based on the selected subcategory -->
-                                    <% if (product.subSubCategory) { %>
-                                        <option value="<%= product.subSubCategory %>" selected><%= product.subSubCategory %></option>
-                                    <% } %>
                                 </select>
                             </div>
                             
+
                             <script>
                                 function populateSubcategories() {
                                     const categorySelect = document.getElementById('category');

@@ -46,6 +46,15 @@ router.post(
         });
       })
       .normalizeEmail(),
+      check('name').custom((value,{req})=>{
+        return User.findOne({name:value}).then((userDoc)=>{
+          if(userDoc){
+            return Promise.reject(
+              "user name is already Exist"
+            )
+          }
+        })
+      }),
     body("password", "The password contain atleast 5 characters")
       .isLength({ min: 5 })
       .isAlphanumeric()

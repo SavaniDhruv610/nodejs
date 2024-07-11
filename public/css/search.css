@@ -104,32 +104,6 @@ main {
     background-color: #007d8a; /* Darker shade on hover */
 }
 
-
-.like-button, .dislike-button {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto;
-    line-height: 50px;
-    border-radius: 50%;
-    border: 1px solid;
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.like-button {
-    color: rgba(0,150,136,1);
-    background-color: rgba(38,166,154,0.3);
-    border-color: rgba(0,150,136,1);
-}
-
-.dislike-button {
-    color: rgba(255,82,82,1);
-    background-color: rgba(255,138,128,0.3);
-    border-color: rgba(255,82,82,1);
-}
-
 .learnmore {
     width: 100%;
     padding: 10px;

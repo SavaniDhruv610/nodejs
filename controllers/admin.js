@@ -315,6 +315,7 @@ exports.getAccount = (req, res, next) => {
     .then((orders) => {
       res.render("admin/account", {
         email: userData.email,
+        name:userData.name,
         orders: orders,
         pageTitle: "Account",
         path: "/admin/account",

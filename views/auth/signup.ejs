@@ -12,6 +12,24 @@
         <% } %>
         <form class="login-form" action="/signup" method="POST" novalidate>
             <div class="form-control">
+                <label for="name">User Name</label>
+                <input 
+                    class="<%= validationErrors.find(e => e.param === 'name') ? 'invalid' : '' %>"
+                    type="name" 
+                    name="name" 
+                    id="name" 
+                    value="<%= oldInput.email %>">
+            </div>
+            <div class="form-control">
+                <label for="number">Mobile Number</label>
+                <input 
+                    class="<%= validationErrors.find(e => e.param === 'number') ? 'invalid' : '' %>"
+                    type="number" 
+                    name="number" 
+                    id="number" 
+                    value="<%= oldInput.email %>">
+            </div>
+            <div class="form-control">
                 <label for="email">E-Mail</label>
                 <input 
                     class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>"

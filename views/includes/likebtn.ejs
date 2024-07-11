@@ -1,0 +1,4 @@
+<button class="btn like-toggle-button" id="like-<%= product._id %>" data-liked="<%= product.likes.includes(user._id) %>">
+    <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
+</button>
+<span id="like-count-<%= product._id %>"><%= product.likes.length %></span>

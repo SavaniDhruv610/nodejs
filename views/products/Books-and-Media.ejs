@@ -1,0 +1,40 @@
+<h2>Books and Media</h2>
+        <% if (prods.length > 0) { %>
+        <div class="slider-container">
+            <button class="slider-btn prev-btn">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <div class="slider responsive">
+                <% for (let product of prods) { %>
+                    <% if (!product.isDeleted && product.category === 'Books and Media') { %>
+                        <!-- Filter by category 'Electronics' -->
+                        <div class="slick-slide">
+                            <article class="card product-item">
+                                <h1 class="product__title"><%= product.title %></h1>
+                                <div class="card__image">
+                                    <img src="/<%= product.imageUrl %>" alt="<%= product.title %>" />
+                                </div>
+                                <div class="card__content">
+                                    <h2 class="product__price">₹<%= product.price %></h2>
+                                    <p class="product__description">
+                                        <%= product.description.length > 35 ? product.description.substring(0, 35) + "..." : product.description %>
+                                    </p>
+                                </div>
+                                <div class="card__actions">
+                                    <a href="/products/<%= product._id %>" class="btn">Details</a>
+                                    <% if (isAuthenticated) { %>
+                                        <%- include('../includes/likebtn.ejs', { product: product, user: user }) %>
+                                    <% } %>
+                                </div>
+                            </article>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+            <button class="slider-btn next-btn">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+        <% } else { %>
+        <h1>No Products Found!</h1>
+        <% } %>

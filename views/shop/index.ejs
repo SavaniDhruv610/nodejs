@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/like-dislike-btn.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
     <script src="https://use.fontawesome.com/fe459689b4.js"></script>
@@ -11,98 +12,31 @@
     <%- include('../includes/navigation.ejs') %>
 
     <main>
-        <h2>Electric</h2>
-        <% if (prods.length > 0) { %>
-            <div class="slider-container">
-                <button class="slider-btn prev-btn"><i class="fa fa-chevron-left"></i></button>
-                <div class="slider responsive">
-                    <% for (let product of prods) { %>
-                        <% if (!product.isDeleted && product.category === 'Electronics') { %> <!-- Filter by category 'Electronics' -->
-                            <div class="slick-slide">
-                                <article class="card product-item">
-                                    <h1 class="product__title"><%= product.title %></h1>
-                                    <div class="card__image">
-                                        <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
-                                    </div>
-                                    <div class="card__content">
-                                        <h2 class="product__price">₹<%= product.price %></h2>
-                                        <p class="product__description">
-                                            <%= product.description.length > 35 ? product.description.substring(0, 35) + "..." : product.description %>
-                                        </p>
-                                    </div>
-                                    <div class="card__actions">
-                                        <a href="/products/<%= product._id %>" class="btn">Details</a>
-                                        <% if (isAuthenticated) { %>
-                                            <button class="btn like-button" id="like-<%= product._id %>">
-                                                <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
-                                            </button>
-                                            <span><%= product.likes.length %></span> 
-                                            <button class="btn dislike-button" id="unlike-<%= product._id %>">
-                                                <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
-                                            </button>
-                                        <% } %>
-                                    </div>
-                                </article>
-                            </div>
-                        <% } %>
-                    <% } %>
-                </div>
-                <button class="slider-btn next-btn"><i class="fa fa-chevron-right"></i></button>
-            </div>
-        <% } else { %>
-            <h1>No Products Found!</h1>
-        <% } %>
         
-        <h2>Fashion and Apparel</h2>
-        <% if (prods.length > 0) { %>
-            <div class="slider-container">
-                <button class="slider-btn prev-btn"><i class="fa fa-chevron-left"></i></button>
-                <div class="slider responsive">
-                    <% for (let product of prods) { %>
-                        <% if (!product.isDeleted && product.category === 'Fashion and Apparel') { %> <!-- Filter by category 'Fashion and Apparel' -->
-                            <div class="slick-slide">
-                                <article class="card product-item">
-                                    <h1 class="product__title"><%= product.title %></h1>
-                                    <div class="card__image">
-                                        <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
-                                    </div>
-                                    <div class="card__content">
-                                        <h2 class="product__price">₹<%= product.price %></h2>
-                                        <p class="product__description">
-                                            <%= product.description.length > 35 ? product.description.substring(0, 35) + "..." : product.description %>
-                                        </p>
-                                    </div>
-                                    <div class="card__actions">
-                                        <a href="/products/<%= product._id %>" class="btn">Details</a>
-                                        <% if (isAuthenticated) { %>
-                                            <button class="btn like-button" id="like-<%= product._id %>">
-                                                <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
-                                            </button>
-                                            <span><%= product.likes.length %></span> 
-                                            <button class="btn dislike-button" id="unlike-<%= product._id %>">
-                                                <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
-                                            </button>
-                                        <% } %>
-                                    </div>
-                                </article>
-                            </div>
-                        <% } %>
-                    <% } %>
-                </div>
-                <button class="slider-btn next-btn"><i class="fa fa-chevron-right"></i></button>
-            </div>
-        <% } else { %>
-            <h1>No Products Found!</h1>
-        <% } %>
+        <%- include('../products/electricproduct.ejs') %>
+
+        <%- include('../products/Fashion-and-Apparel.ejs') %>
+
+        <%- include('../products/Books-and-Media.ejs') %>
+
+        <%- include('../products/Home-and-Kitchen.ejs') %>
+        
     </main>
 
     <%- include('../includes/end.ejs') %>
 
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Slick slider dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
-    <!-- AJAX Script -->
+    <!-- Define csrfToken -->
+    <script>
+        const csrfToken = "<%= csrfToken %>";
+    </script>
+
+    <!-- Your custom scripts -->
     <script src="/js/like.js"></script>
+    <script src="/js/slider.js"></script>
 </body>
 </html>

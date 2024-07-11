@@ -1,134 +1,81 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/search.css">
+    <link rel="stylesheet" href="/css/search.css">
+    <link rel="stylesheet" href="/css/like-dislike-btn.css">
+    <script src="https://use.fontawesome.com/fe459689b4.js"></script>
+    </head>
 
-<script src="https://use.fontawesome.com/fe459689b4.js"></script>
-</head>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
+            <main>
+                <div class="grid">
+                    <% if (products && products.length> 0) { %>
+                        <% products.forEach(product=> { %>
+                            <article class="card product-item">
+                                <div class="card__left">
+                                    <div class="card__image">
+                                        <img src="<%= product.imageUrl[0] %>" alt="<%= product.title %>">
+                                    </div>
+                                </div>
+                                <div class="card__right">
+                                    <header class="card__header">
+                                        <h1 class="product__title">
+                                            <%= product.title %>
+                                        </h1>
+                                    </header>
+                                    <div class="card__content">
+                                        <h2 class="product__price">$<%= product.price.toFixed(2) %>
+                                        </h2>
+                                        <p class="product__quantity">Quantity: <%= product.quantity %>
+                                        </p>
+                                        <p class="product__color">Color: <%= product.colour %>
+                                        </p>
+                                        <p class="product__category">Category: <%= product.category %>
+                                        </p>
+                                        <p class="product__description" onclick="toggleDescription(this)">
+                                            <%= product.description.length> 85 ? product.description.substring(0, 85) +
+                                                "..." : product.description %>
+                                        </p>
+                                    </div>
+                                    <div class="card__actions">
+                                        <a href="/products/<%= product._id %>" class="btn">Details</a>
+                                        <% if (isAuthenticated) { %>
+                                            <%- include('../includes/add-to-cart.ejs', { product: product }) %>
+                                                <%- include('../includes/likebtn.ejs', { product: product ,user:user})
+                                                    %>
+                                                    <% } %>
+                                    </div>
+                                </div>
+                            </article>
+                            <% }) %>
+                                <% } else { %>
+                                    <h1>No Products Found!</h1>
+                                    <% } %>
+                </div>
 
-    <main>
-        <div class="grid">
-            <% if (products && products.length > 0) { %>
-                <% products.forEach(product => { %>
-                    <article class="card product-item">
-                        <div class="card__left">
-                            <div class="card__image">
-                                <img src="<%= product.imageUrl[0] %>" alt="<%= product.title %>">
-                            </div>
-                        </div>
-                        <div class="card__right">
-                            <header class="card__header">
-                                <h1 class="product__title"><%= product.title %></h1>
-                            </header>
-                            <div class="card__content">
-                                <h2 class="product__price">$<%= product.price.toFixed(2) %></h2>
-                                <p class="product__quantity">Quantity: <%= product.quantity %></p>
-                                <p class="product__color">Color: <%= product.colour %></p>
-                                <p class="product__category">Category: <%= product.category %></p>
-                                <p class="product__description" onclick="toggleDescription(this)">
-                                    <%= product.description.length > 85 ? product.description.substring(0, 85) + "..." : product.description %>
-                                </p>
-                            </div>
-                            <div class="card__actions">
-                                <a href="/products/<%= product._id %>" class="btn">Details</a>
-                                <% if (isAuthenticated) { %>
-                                    <%- include('../includes/add-to-cart.ejs', { product: product }) %>
-                                    <button class="btn like-button" id="like-<%= product._id %>">
-                                        <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
-                                    </button>
-                                    <button class="btn dislike-button" id="unlike-<%= product._id %>">
-                                        <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
-                                    </button>
-                                <% } %>
-                            </div>
-                        </div>
-                    </article>
-                <% }) %>
-            <% } else { %>
-                <h1>No Products Found!</h1>
-            <% } %>
-        </div>
+                <!-- Pagination -->
+                <%- include('../includes/pagination.ejs', { currentPage: currentPage, lastPage: lastPage, nextPage:
+                    nextPage, hasPreviousPage: hasPreviousPage, hasNextPage: hasNextPage, path: '/search' , query: query
+                    }) %>
+            </main>
 
-        <!-- Pagination -->
-        <%- include('../includes/pagination.ejs', {
-            currentPage: currentPage,
-            lastPage: lastPage,
-            nextPage: nextPage,
-            hasPreviousPage: hasPreviousPage,
-            hasNextPage: hasNextPage,
-            path: '/search',
-            query: query // Pass the query to pagination for correct URL generation
-        }) %>
-    </main>
+            <%- include('../includes/end.ejs') %>
 
-    <%- include('../includes/end.ejs') %>
-    <script>
-        function toggleDescription(element) {
-            element.classList.toggle('expanded');
-        }
-    </script>
-    
-    <!-- jQuery CDN -->
+                <script>
+                    function toggleDescription(element) {
+                        element.classList.toggle('expanded');
+                    }
+                </script>
+
+               <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- AJAX Script -->
     <script>
-        $(document).ready(function () {
-            // Function to fetch CSRF token
-            function getCsrfToken() {
-                return '<%= csrfToken %>'; // Use EJS syntax to get CSRF token
-            }
-
-            // Like and Unlike Button Click Handlers
-            $('button[id^="like-"]').on('click', function () {
-                const productId = $(this).attr('id').split('-')[1];
-                const csrfToken = getCsrfToken();
-                const likeButton = $(this);
-                const unlikeButton = $(`#unlike-${productId}`);
-
-                $.ajax({
-                    url: `/products/like/${productId}`,
-                    method: 'PUT',
-                    headers: {
-                        'csrf-token': csrfToken
-                    },
-                    success: function (response) {
-                        console.log('Product liked successfully:', response);
-                        likeButton.addClass('green');
-                        unlikeButton.removeClass('red');
-                    },
-                    error: function (error) {
-                        console.error('Error liking product:', error);
-                        alert('Error liking product. Please try again later.');
-                    }
-                });
-            });
-
-            $('button[id^="unlike-"]').on('click', function () {
-                const productId = $(this).attr('id').split('-')[1];
-                const csrfToken = getCsrfToken();
-                const unlikeButton = $(this);
-                const likeButton = $(`#like-${productId}`);
-
-                $.ajax({
-                    url: `/products/unlike/${productId}`,
-                    method: 'PUT',
-                    headers: {
-                        'csrf-token': csrfToken
-                    },
-                    success: function (response) {
-                        console.log('Product unliked successfully:', response);
-                        unlikeButton.addClass('red');
-                        likeButton.removeClass('green');
-                    },
-                    error: function (error) {
-                        console.error('Error unliking product:', error);
-                        alert('Error unliking product. Please try again later.');
-                    }
-                });
-            });
-        });
+        const csrfToken = "<%= csrfToken %>";
     </script>
+
+    <!-- AJAX Script -->
+    <script src="/js/like.js"></script>
+    
 
 </body>

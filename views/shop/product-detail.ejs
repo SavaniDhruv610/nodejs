@@ -102,7 +102,7 @@
                   const newComment = document.createElement('div');
                   newComment.className = 'comment';
                   newComment.innerHTML = `
-                        <p><strong>${comment.email}</strong> ${new Date(comment.created).toLocaleString()}</p>
+                        <p><strong>${comment.name}</strong> ${new Date(comment.created).toLocaleString()}</p>
                         <p>${comment.text}</p>
                     `;
                   commentsContainer.appendChild(newComment);

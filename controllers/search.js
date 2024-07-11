@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const ITEMS_PER_PAGE_SEARCH = 50;
+// const csrfToken = req.csrfToken();
 
 exports.getSearch = (req, res, next) => {
   const query = req.query.query;
@@ -32,6 +33,7 @@ exports.getSearch = (req, res, next) => {
         .then((products) => {
           res.render("shop/search", {
             products: products,
+            user:req.user,
             pageTitle: "Search Results",
             path: "/search",
             isAuthenticated: req.session.isLoggedIn,
@@ -41,7 +43,8 @@ exports.getSearch = (req, res, next) => {
             nextPage: page + 1,
             previousPage: page - 1,
             lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE_SEARCH),
-            query: query // Send back the query to pre-fill the search field
+            query: query, // Send back the query to pre-fill the search field
+            // csrfToken:csrfToken
           });
         });
     })

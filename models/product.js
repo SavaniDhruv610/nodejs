@@ -148,7 +148,7 @@ const productSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: "User",
         },
-        email: { type:String, ref: "User" },
+        name: { type:String, ref: "User" },
       },
     ],
     isDeleted: {

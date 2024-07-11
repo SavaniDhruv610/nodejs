@@ -6,8 +6,8 @@ body {
 }
 
 main {
-    padding: 1.5rem;
-    background-color: #f9f9f9;
+    padding: 0px;
+    /* background-color: #f9f9f9; */
     height: auto;
 }
 
@@ -24,7 +24,7 @@ main {
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
     width: 100%;
-    height: 400px; /* Fixed height for consistency */
+    height: 315px; /* Fixed height for consistency */
 }
 h2{
     justify-content: center;
@@ -112,39 +112,6 @@ h2{
     text-align: center;
     color: #666;
     font-size: 0.9rem;
-}
-
-.like-button, .dislike-button {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto;
-    line-height: 50px;
-    border-radius: 50%;
-    border: 1px solid;
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.like-button {
-    color: rgba(0, 150, 136, 1);
-    background-color: rgba(38, 198, 218, 0.1);
-}
-
-.like-button.green {
-    color: #fff;
-    background-color: green;
-}
-
-.dislike-button {
-    color: rgba(198, 40, 40, 1);
-    background-color: rgba(198, 40, 40, 0.1);
-}
-
-.dislike-button.red {
-    color: #fff;
-    background-color: red;
 }
 
 .slider-container {

@@ -7,7 +7,7 @@ const PDFDocument = require("pdfkit");
 const Product = require("../models/product");
 const Order = require("../models/order");
 const mongoose = require('mongoose');
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 100;
 
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
@@ -88,6 +88,8 @@ exports.getProduct = (req, res, next) => {
 exports.getIndex = (req, res, next) => {
   const page = +req.query.page || 1; // Parse the page number from query parameters or default to 1
   let totalItems;
+  res.locals.csrfToken = req.csrfToken();
+  
 
   Product.find({ isDeleted: false })
     .countDocuments()
@@ -431,16 +433,13 @@ exports.like = (req, res, next) => {
       if (!updatedProduct) {
         return res.status(404).json({ message: "Product not found" });
       }
-      res
-        .status(200)
-        .json({ message: "Product liked", product: updatedProduct });
+      res.status(200).json({ message: "Product liked", likesCount: updatedProduct.likes.length });
     })
     .catch((err) => {
       console.error("Error liking product:", err);
       res.status(500).json({ message: "Internal server error" });
     });
 };
-
 
 exports.unlike = (req, res, next) => {
   const productId = req.params.productId;
@@ -455,9 +454,7 @@ exports.unlike = (req, res, next) => {
       if (!updatedProduct) {
         return res.status(404).json({ message: "Product not found" });
       }
-      res
-        .status(200)
-        .json({ message: "Product unliked", product: updatedProduct });
+      res.status(200).json({ message: "Product unliked", likesCount: updatedProduct.likes.length });
     })
     .catch((err) => {
       console.error("Error unliking product:", err);
@@ -466,17 +463,18 @@ exports.unlike = (req, res, next) => {
 };
 
 
+
 exports.postComments = (req, res) => {
   const commentText = req.body.comment;
   const userId = req.user._id; // Assuming userId references the user document
   const productId = req.params.productId;
-  const email = req.user.email;
+  const name = req.user.name;
 
   const comment = {
     text: commentText,
     postedBy: userId,
     created: new Date(),
-    email: email, // Assign the email field
+    name: name, // Assign the name field
   };
 
   // Update the product with the new comment
@@ -485,7 +483,7 @@ exports.postComments = (req, res) => {
     { $push: { comments: comment } }, // Push the entire comment object to the product's comments array
     { new: true }
   )
-    .populate('comments.postedBy', 'email') // Populate the user's email in the comments array
+    .populate('comments.postedBy', 'name') // Populate the user's email in the comments array
     .then(updatedProduct => {
       if (!updatedProduct) {
         return res.status(404).json({ message: 'Product not found' });
