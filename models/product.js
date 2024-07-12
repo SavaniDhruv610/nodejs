@@ -114,7 +114,6 @@ const productSchema = new Schema(
     },
     subSubCategory: {
       type: String,
-      required: true
     },
     colour: {
       type: String,
