@@ -8,13 +8,11 @@ const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
 
-
-
-
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-const MONGODB_URI = "mongodb+srv://dhruvsavani610:OnpKEyb6R4liBAfY@shop.js2sfd0.mongodb.net/shop?retryWrites=true&w=majority&appName=shop";
+const MONGODB_URI =
+  "mongodb+srv://dhruvsavani610:OnpKEyb6R4liBAfY@shop.js2sfd0.mongodb.net/shop?retryWrites=true&w=majority&appName=shop";
 
 const app = express();
 const store = new MongoDBStore({
@@ -28,7 +26,7 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '_' + file.originalname);
+    cb(null, Date.now() + "_" + file.originalname);
   },
 });
 
@@ -50,17 +48,21 @@ app.use(express.json()); // read the comment from form
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 app.use(express.static(path.join(__dirname, "public")));
-app.use('/images', express.static(path.join(__dirname, "images")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // Session middleware
-app.use(session({
-  secret: "my secret",
-  resave: false,
-  saveUninitialized: false,
-  store: store,
-}));
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
 
 // CSRF middleware
 app.use(csrfProtection);
@@ -122,10 +124,11 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-mongoose.connect(MONGODB_URI)
+mongoose
+  .connect(MONGODB_URI)
   .then(() => {
-    app.listen(3000);
-    console.log("Server started on port 3000");
+    app.listen(3001);
+    console.log("Server started on port 3001");
   })
   .catch((err) => {
     console.log(err);
